@@ -62,7 +62,7 @@ export type AppointmentBare = Omit<
   Appointment,
   'user' | 'patient' | 'schedule'
 > & {
-  patient?: PatientBare
+  patient: PatientBare
 }
 
 export const appointmentSchema = validates<AppointmentBare>().with({
@@ -75,7 +75,7 @@ export const appointmentSchema = validates<AppointmentBare>().with({
   status: z.string().trim().min(2).max(100),
   notes: z.string().trim().min(2).max(100),
   email: z.string().trim().min(2).max(64),
-  patient: patientSchema.optional(), // Add this line to include the patient property
+  patient: patientSchema,
 })
 
 export const appointmentInsertSchema = appointmentSchema

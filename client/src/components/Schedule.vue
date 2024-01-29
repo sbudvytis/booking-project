@@ -127,8 +127,8 @@ onMounted(async () => {
               <span
                 class="cursor-pointer"
                 v-tooltip="{
-                  content: `<p>👤 <b>${appointments[day][timeSlot].patient?.firstName} ${appointments[day][timeSlot].patient?.lastName}</b></p>
-            <p>📱 Phone number: <b>${appointments[day][timeSlot].patient?.contactNumber}</b></p>
+                  content: `<p>👤 <b>${appointments[day][timeSlot].patient.firstName} ${appointments[day][timeSlot].patient.lastName}</b></p>
+            <p>📱 Phone number: <b>${appointments[day][timeSlot].patient.contactNumber}</b></p>
             <p>📝 Status: <b>${appointments[day][timeSlot].status}</b></p>
             <p>📆 Day: <b>${appointments[day][timeSlot].appointmentDay}</b></p>
             <p>🕓 Time: <b>${appointments[day][timeSlot].startTime} - ${appointments[day][timeSlot].endTime}</b></p>`,
