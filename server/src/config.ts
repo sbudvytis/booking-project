@@ -74,10 +74,6 @@ export default config
 
 // utility functions
 function coerceBoolean(value: unknown) {
-  if (typeof value === 'boolean') {
-    return value
-  }
-
   if (typeof value === 'string') {
     return value === 'true' || value === '1'
   }

@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set IS_CI environment variable
+        run: echo "IS_CI=true" >> $GITHUB_ENV
+
       - name: Type check server
         run: npm run typecheck -w=server
 
