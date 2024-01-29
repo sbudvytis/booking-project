@@ -10,8 +10,8 @@ import { z } from 'zod'
 import {
   Patient,
   patientInsertSchema,
-  PatientBare,
   patientSchema,
+  type PatientBare,
 } from './patient'
 import { User } from './user'
 import { DentistSchedule } from './dentistSchedule'
