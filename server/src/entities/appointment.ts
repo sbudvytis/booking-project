@@ -7,7 +7,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { z } from 'zod'
-import { Patient, patientInsertSchema } from './patient'
+import {
+  Patient,
+  patientInsertSchema,
+  PatientBare,
+  patientSchema,
+} from './patient'
 import { User } from './user'
 import { DentistSchedule } from './dentistSchedule'
 
@@ -53,7 +58,12 @@ export class Appointment {
   email: string
 }
 
-export type AppointmentBare = Omit<Appointment, 'user' | 'patient' | 'schedule'>
+export type AppointmentBare = Omit<
+  Appointment,
+  'user' | 'patient' | 'schedule'
+> & {
+  patient?: PatientBare
+}
 
 export const appointmentSchema = validates<AppointmentBare>().with({
   id: z.number().int().positive(),
@@ -65,6 +75,7 @@ export const appointmentSchema = validates<AppointmentBare>().with({
   status: z.string().trim().min(2).max(100),
   notes: z.string().trim().min(2).max(100),
   email: z.string().trim().min(2).max(64),
+  patient: patientSchema.optional(), // Add this line to include the patient property
 })
 
 export const appointmentInsertSchema = appointmentSchema

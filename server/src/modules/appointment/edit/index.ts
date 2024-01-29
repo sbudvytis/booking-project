@@ -18,7 +18,7 @@ export default authenticatedProcedure
         throw new TRPCError({
           code: 'FORBIDDEN',
           message:
-            'Permission denied. You do not have the required role or permissions to add an appointment.',
+            'Permission denied. You do not have the required role or permissions to edit an appointment.',
         })
       }
 
