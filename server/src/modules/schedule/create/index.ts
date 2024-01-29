@@ -1,0 +1,30 @@
+import {
+  DentistSchedule,
+  scheduleInsertSchema,
+} from '@server/entities/dentistSchedule'
+import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
+import { TRPCError } from '@trpc/server'
+
+export default authenticatedProcedure
+  .input(scheduleInsertSchema.omit({ userId: true }))
+  .mutation(async ({ input: scheduleData, ctx: { authUser, db } }) => {
+    // Check if the authenticated user has the required role and permissions to add a schedule
+    if (!authUser || authUser.role !== 'dentist') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message:
+          'Permission denied. You do not have the required role or permissions to add a schedule.',
+      })
+    }
+
+    const schedule = {
+      ...scheduleData,
+      userId: authUser.id,
+    }
+
+    const scheduleCreated = await db
+      .getRepository(DentistSchedule)
+      .save(schedule)
+
+    return scheduleCreated
+  })
