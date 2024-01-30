@@ -22,18 +22,24 @@ export default authenticatedProcedure.query(
       // If the user has the permission to view all schedules, retrieve all schedules
       schedules = (await db.getRepository(DentistSchedule).find({
         order: { scheduleId: 'DESC' },
+        skip: 0,
+        take: 3,
       })) as ScheduleBare[]
     } else if (userRole === 'dentist') {
       // If the user is a dentist, retrieve only their own schedule
       schedules = (await db.getRepository(DentistSchedule).find({
         where: { userId },
         order: { scheduleId: 'DESC' },
+        skip: 0,
+        take: 3,
       })) as ScheduleBare[]
     } else {
       // If the user doesn't have the permission to view all schedules, restrict to their own schedules
       schedules = (await db.getRepository(DentistSchedule).find({
         where: { userId },
         order: { scheduleId: 'DESC' },
+        skip: 0,
+        take: 3,
       })) as ScheduleBare[]
     }
 
