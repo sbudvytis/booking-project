@@ -23,7 +23,7 @@ const navigation = computed(() =>
 <template>
   <FwbNavbar>
     <template #logo>
-      <fwb-navbar-logo alt="dentist schedule" image-url="/src/assets/logo.svg" link="/dashboard">
+      <fwb-navbar-logo alt="dentist schedule" image-url="/src/assets/logo.png" link="/dashboard">
         Dentist scheduler
       </fwb-navbar-logo>
     </template>

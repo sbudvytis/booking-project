@@ -31,6 +31,9 @@ RUN rm /usr/share/nginx/html/* -rf
 # Copy the built client app assets to the Nginx directory
 COPY --from=builder /app/client/dist /usr/share/nginx/html
 
+# Copy the logo.png file to the appropriate directory
+COPY client/src/assets/logo.png /usr/share/nginx/html/src/assets/
+
 # Set the environment variables for Nginx
 ENV NGINX_ENVSUBST_OUTPUT_DIR '/etc/nginx/conf.d'
 
