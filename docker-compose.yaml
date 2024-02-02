@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  # spin up a database
+  postgres:
+    image: postgres:16.1-alpine
+    environment:
+      POSTGRES_USER: sarunasbudvytis
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bookings
+    ports:
+      - "5435:5432"
+    volumes:
+      - bookings-db:/var/lib/postgresql/data
+
+  # start up an API server
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    # env_file:
+    #   - ./server/.env
+    environment:
+      DB_HOST: postgres
+      DB_USER: sarunasbudvytis
+      DB_PASSWORD: postgres
+      DB_NAME: bookings
+      PORT: 3000
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+
+  # start up a client (and proxy) server
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+      args:
+        VITE_API_ORIGIN: http://localhost:3001
+        VITE_API_PATH: /v1/trpc
+    environment:
+      API_PROXY_PASS: http://server:3000
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+
+volumes:
+  bookings-db:
