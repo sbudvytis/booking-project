@@ -40,6 +40,7 @@ export function withError<Args extends any[], Return, T extends (...args: Args) 
 }
 
 function getErrorMessage(error: unknown) {
+
   if (!(error instanceof Error)) {
     return DEFAULT_SERVER_ERROR
   }

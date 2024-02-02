@@ -17,6 +17,7 @@ export default publicProcedure
     })
   )
   .mutation(async ({ input: { email, password }, ctx: { db } }) => {
+
     const user = (await db.getRepository(User).findOne({
       select: {
         id: true,
@@ -29,6 +30,7 @@ export default publicProcedure
       },
     })) as Pick<User, 'id' | 'password' | 'role' | 'permissions'> | undefined
 
+    
     if (!user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

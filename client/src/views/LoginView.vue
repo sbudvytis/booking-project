@@ -14,7 +14,7 @@ const userForm = ref({
 })
 
 const [submitLogin, errorMessage] = useErrorMessage(async () => {
-  await login(userForm.value)
+  console.log(await login(userForm.value))
 
   router.push({ name: 'Dashboard' })
 })

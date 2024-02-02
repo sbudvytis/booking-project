@@ -28,6 +28,7 @@ async function submitSignup() {
 
     hasSucceeded.value = true
   } catch (error) {
+    console.log('ERROR WHILE SIGNING UP: ', error)
     errorMessage.value = error instanceof Error ? error.message : DEFAULT_SERVER_ERROR
   }
 }
