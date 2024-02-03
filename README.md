@@ -1,7 +1,7 @@
 ## Dentist scheduler application
 
 <p align="center">
-<img src="https://github.com/TuringCollegeSubmissions/sbudvy-BE.3.5/client/src/assets/preview.png">
+<img src="https://github.com/sbudvytis/booking-project/blob/master/client/src/assets/preview.png">
 </p>
 
 This is a scheduler application designed for dentists to manage their time, appointments and schedules. Potential users are dental clinics
