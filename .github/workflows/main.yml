@@ -123,7 +123,7 @@ jobs:
                 "80": "HTTP"
               },
               "environment": {
-                "API_PROXY_PASS": "${{ env.PROXY_PASS }}"
+                "API_PROXY_PASS": "${{ vars.CLIENT_PROXY_PASS }}"
               }
             },
             "server": {
