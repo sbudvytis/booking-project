@@ -1,8 +1,9 @@
+import type { DataSourceOptions } from 'typeorm'
 import { createDatabase } from '@server/database'
 import config from '@server/config'
 
 export async function createTestDatabase() {
-  const db = createDatabase(config.database)
+  const db = createDatabase(config.database as DataSourceOptions)
 
   await db.initialize()
 
