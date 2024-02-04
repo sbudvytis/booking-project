@@ -1,5 +1,5 @@
 # Stage 1: Build our front end
-FROM node:18.19.0-alpine3.18 AS builder
+FROM --platform=linux/amd64 node:18.19.0-alpine3.18 AS builder
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ WORKDIR /app/client
 RUN npm run build
 
 # Stage 2: Serve the application with Nginx
-FROM nginx:1.25.3-alpine3.18
+FROM --platform=linux/amd64 nginx:1.25.3-alpine3.18
 
 # Delete the default welcome page.
 RUN rm /usr/share/nginx/html/* -rf
