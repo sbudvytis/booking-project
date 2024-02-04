@@ -30,7 +30,7 @@ services:
       DB_HOST: postgres-db
       DB_USER: turing
       DB_PASSWORD: postgres
-      DB_SSL: false
+      DB_SSL: true
       DB_NAME: bookings
     ports:
       - "3000:3000"

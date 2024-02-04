@@ -1,13 +1,18 @@
 {
   "client": {
-    "image": ":capstone-test.client-1.7",
+    "image": ":capstone-test.client-1.19",
     "command": [],
     "ports": {
       "80": "HTTP"
+    },
+    "environment": {
+      "API_PROXY_PASS": "http://localhost:3000",
+      "VITE_API_ORIGIN": "http://localhost:3001",
+      "VITE_API_PATH": "/api/v1/trpc/"
     }
   },
   "server": {
-    "image": ":capstone-test.server-1.9",
+    "image": ":capstone-test.server-1.18",
     "ports": {
       "3000": "HTTP"
     },
@@ -18,7 +23,8 @@
       "DB_HOST": "ep-cool-rice-a2n41imw.eu-central-1.aws.neon.tech",
       "DB_NAME": "bookings",
       "DB_USER": "turingcollegeproject",
-      "DB_PASSWORD": "9hQrXulkEB0O"
+      "DB_PASSWORD": "9hQrXulkEB0O",
+      "TOKEN_KEY": "supersecretkey"
     }
   }
 }
