@@ -1,5 +1,5 @@
 # Start from the updated base image
-FROM node:18.19.0-alpine3.18 AS builder
+FROM --platform=linux/amd64 node:18.19.0-alpine3.18 AS builder
 
 WORKDIR /app
 
