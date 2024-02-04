@@ -50,7 +50,7 @@ jobs:
   build-deploy:
     needs: test
     runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     env:
       API_ORIGIN: ${{ vars.API_ORIGIN }}
       API_PATH: /api/v1/trpc
