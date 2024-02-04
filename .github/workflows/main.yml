@@ -124,7 +124,7 @@ jobs:
               },
               "environment": {
                 "API_PROXY_PASS": "${{ env.PROXY_PASS }}",
-                "VITE_API_ORIGIN": ${{ vars.API_ORIGIN }},
+                "VITE_API_ORIGIN": "${{ vars.API_ORIGIN }}",
                 "VITE_API_PATH": "/api/v1/trpc/"
               }
             },
