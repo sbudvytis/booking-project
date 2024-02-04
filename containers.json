@@ -6,9 +6,7 @@
       "80": "HTTP"
     },
     "environment": {
-      "API_PROXY_PASS": "http://localhost:3000",
-      "VITE_API_ORIGIN": "http://localhost:3001",
-      "VITE_API_PATH": "/api/v1/trpc/"
+      "API_PROXY_PASS": "http://localhost:3000"
     }
   },
   "server": {
