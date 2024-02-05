@@ -10,7 +10,7 @@ COPY server/package*.json server/
 RUN npm ci
 
 # Copy over the entire monorepo since we need to access the tRPC server
-# types for the monorepo build
+# types for the monorepo build.
 COPY . .
 
 ARG VITE_API_ORIGIN
