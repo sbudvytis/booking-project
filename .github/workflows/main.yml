@@ -141,7 +141,7 @@ jobs:
                 "DB_PASSWORD": "${{ secrets.PROD_DB_PASSWORD }}",
                 "TOKEN_KEY": "${{ secrets.TOKEN_KEY }}",
                 "EMAIL": "${{ secrets.EMAIL }}",
-                "PASSWORD": "${{ secrets.PASSWORD }}",
+                "PASSWORD": "${{ secrets.PASSWORD }}"
               }
             }
           }' > containers.json
