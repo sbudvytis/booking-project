@@ -13,8 +13,8 @@ RUN npm ci
 # types for the monorepo build.
 COPY . .
 
-ARG VITE_API_ORIGIN
-ARG VITE_API_PATH
+ARG API_ORIGIN
+ARG API_PATH
 
 # Switch to the client folder
 WORKDIR /app/client
