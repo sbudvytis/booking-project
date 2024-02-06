@@ -43,5 +43,5 @@ COPY client/nginx/default.conf.template /etc/nginx/templates/default.conf.templa
 # Expose port 80 to the outside
 EXPOSE 80
 
-# Start Nginx
+# Start Nginx.
 CMD ["nginx", "-g", "daemon off;"]
