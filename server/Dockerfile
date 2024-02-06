@@ -11,6 +11,10 @@ RUN npm ci
 # Copy over the server source code
 COPY server/ server/
 
+# Set default values for email and password
+ENV EMAIL=""
+ENV PASSWORD=""
+
 # Build the server
 WORKDIR /app/server
 RUN npm run build
