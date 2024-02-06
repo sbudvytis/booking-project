@@ -19,8 +19,6 @@
     "bootstrap": "^5.3.2",
     "floating-vue": "^5.2.0",
     "nodemailer": "^6.9.8",
-    "pino": "^8.18.0",
-    "pino-pretty": "^10.3.1",
     "vue-multiselect": "^2.1.8",
     "vue-tippy": "^6.4.1"
   },
