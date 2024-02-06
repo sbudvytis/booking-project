@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import config from '@server/config'
 import jsonwebtoken from 'jsonwebtoken'
+import logger from '@server/logger'
 import { publicProcedure } from '@server/trpc'
 import { User } from '@server/entities'
 import { TRPCError } from '@trpc/server'
@@ -17,7 +18,6 @@ export default publicProcedure
     })
   )
   .mutation(async ({ input: { email, password }, ctx: { db } }) => {
-
     const user = (await db.getRepository(User).findOne({
       select: {
         id: true,
@@ -30,8 +30,8 @@ export default publicProcedure
       },
     })) as Pick<User, 'id' | 'password' | 'role' | 'permissions'> | undefined
 
-    
     if (!user) {
+      logger.error('Could not find user with email %s', email)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'We could not find an account with this email address',
@@ -41,6 +41,7 @@ export default publicProcedure
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
+      logger.error('Incorrect password for user %s', email)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'Incorrect password. Try again.',

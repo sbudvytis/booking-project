@@ -35,7 +35,7 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
         :required="true"
       />
 
-      <FwbAlert v-if="errorMessage" data-testid="errorMessage" type="danger">
+      <FwbAlert v-if="errorMessage" data-testid="errorMessage" type="danger" class="text-center">
         {{ errorMessage }}
       </FwbAlert>
 
