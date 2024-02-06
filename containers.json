@@ -22,7 +22,9 @@
       "DB_NAME": "bookings",
       "DB_USER": "turingcollegeproject",
       "DB_PASSWORD": "9hQrXulkEB0O",
-      "TOKEN_KEY": "supersecretkey"
+      "TOKEN_KEY": "supersecretkey",
+      "EMAIL": "sarunas@budvytis.me",
+      "PASSWORD": "SaugusPassas26."
     }
   }
 }

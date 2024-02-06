@@ -52,8 +52,6 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/master'
     env:
-      EMAIL: ${{ secrets.EMAIL }},
-      PASSWORD: ${{ secrets.PASSWORD }},
       API_ORIGIN: ${{ vars.API_ORIGIN }}
       API_PATH: /api/v1/trpc
       CLIENT_IMAGE_TAG: client-${{ github.sha }}
@@ -141,7 +139,9 @@ jobs:
                 "DB_NAME": "${{ secrets.PROD_DB_NAME }}",
                 "DB_USER": "${{ secrets.PROD_DB_USER }}",
                 "DB_PASSWORD": "${{ secrets.PROD_DB_PASSWORD }}",
-                "TOKEN_KEY": "${{ secrets.TOKEN_KEY }}"
+                "TOKEN_KEY": "${{ secrets.TOKEN_KEY }}",
+                "EMAIL": "${{ secrets.EMAIL }}",
+                "PASSWORD": "${{ secrets.PASSWORD }}",
               }
             }
           }' > containers.json
