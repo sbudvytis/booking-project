@@ -4,6 +4,7 @@ import {
 } from '@server/entities/dentistSchedule'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import { TRPCError } from '@trpc/server'
+import logger from '@server/logger'
 
 export default authenticatedProcedure
   .input(scheduleInsertSchema.omit({ userId: true }))
@@ -25,6 +26,10 @@ export default authenticatedProcedure
     const scheduleCreated = await db
       .getRepository(DentistSchedule)
       .save(schedule)
+
+    logger.info(
+      `Schedule created successfully with ID: ${scheduleCreated.scheduleId}`
+    )
 
     return scheduleCreated
   })
