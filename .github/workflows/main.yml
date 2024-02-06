@@ -52,6 +52,8 @@ jobs:
     runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/master'
     env:
+      EMAIL: ${{ secrets.EMAIL }},
+      PASSWORD: ${{ secrets.PASSWORD }},
       API_ORIGIN: ${{ vars.API_ORIGIN }}
       API_PATH: /api/v1/trpc
       CLIENT_IMAGE_TAG: client-${{ github.sha }}
