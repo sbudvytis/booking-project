@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ScheduleBare, AppointmentBare } from '@mono/server/src/shared/entities'
-import { ref, onMounted, type Ref } from 'vue'
+import { ref, onMounted, computed, type Ref } from 'vue'
 import { trpc } from '@/trpc'
 import {
   FwbTable,
@@ -9,11 +9,11 @@ import {
   FwbTableHead,
   FwbTableHeadCell,
   FwbTableRow,
-  FwbTab,
-  FwbTabs,
   FwbButton,
 } from 'flowbite-vue'
 import { getDaysBetweenDates } from '@/utils/validation'
+import { isScheduleExpired } from '../utils/scheduleUtils'
+import VueHorizontal from 'vue-horizontal'
 
 const props = withDefaults(
   defineProps<{
@@ -88,93 +88,146 @@ onMounted(async () => {
     )
   }
 })
+
+const visibleDays = computed(() => {
+  return props.schedule.dayOfWeek.filter((day) => day === activeTab.value)
+})
 </script>
 
 <template>
-  <fwb-tabs v-model="activeTab" v-if="isScheduleValid()" directive="show">
-    <fwb-tab v-for="day in schedule.dayOfWeek" :key="day" :name="day" :title="day">
-      <fwb-table hoverable striped>
-        <fwb-table-head>
-          <fwb-table-head-cell>Time</fwb-table-head-cell>
-          <fwb-table-head-cell class="text-center">Appointment</fwb-table-head-cell>
-          <fwb-table-head-cell class="text-center">End Time</fwb-table-head-cell>
-          <fwb-table-head-cell class="text-center"><span></span></fwb-table-head-cell>
-        </fwb-table-head>
-        <fwb-table-body>
-          <fwb-table-row
-            v-for="timeSlot in generateTimeSlots(
-              schedule.startTime.toString(),
-              schedule.endTime.toString(),
-              appointments[day] || {}
-            )"
-            :key="timeSlot"
+  <div>
+    <div class="border-b border-gray-200 pt-10 text-sm font-medium text-gray-500">
+      <vue-horizontal class="horizontal" :displacement="0.5" :button-between="false">
+        <template v-slot:btn-prev>
+          <button
+            class="flex h-full items-center justify-center rounded-tl-lg bg-gradient-to-l from-transparent via-white to-gray-50 p-6"
           >
-            <fwb-table-cell
-              :class="{
-                'line-through dark:text-white':
-                  appointments[day]?.[timeSlot]?.status === 'Completed',
-              }"
-              >{{ timeSlot }}</fwb-table-cell
+            <svg
+              class="h-6 w-6 text-gray-600 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 8 14"
             >
-            <fwb-table-cell
-              v-if="appointments[day]?.[timeSlot]"
-              :class="{
-                'line-through dark:text-white':
-                  appointments[day]?.[timeSlot]?.status === 'Completed',
-              }"
-              class="text-center"
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 1 1.3 6.326a.91.91 0 0 0 0 1.348L7 13"
+              />
+            </svg>
+          </button>
+        </template>
+
+        <template v-slot:btn-next>
+          <button
+            class="flex h-full items-center justify-center rounded-tr-lg bg-gradient-to-r from-transparent via-white to-gray-50 p-6"
+          >
+            <svg
+              class="h-6 w-6 text-gray-600 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 8 14"
             >
-              <span
-                class="cursor-pointer"
-                v-tooltip="{
-                  content: `<p>👤 <b>${appointments[day][timeSlot].patient?.firstName} ${appointments[day][timeSlot].patient?.lastName}</b></p>
-            <p>📱 Phone number: <b>${appointments[day][timeSlot].patient?.contactNumber}</b></p>
-            <p>📝 Status: <b>${appointments[day][timeSlot].status}</b></p>
-            <p>📆 Day: <b>${appointments[day][timeSlot].appointmentDay}</b></p>
-            <p>🕓 Time: <b>${appointments[day][timeSlot].startTime} - ${appointments[day][timeSlot].endTime}</b></p>`,
-                  html: true,
-                  placement: 'bottom-start',
-                  defaultClass: 'custom-tooltip',
-                }"
-              >
-                {{ appointments[day][timeSlot].appointmentType }}
-              </span>
-            </fwb-table-cell>
-            <fwb-table-cell v-else></fwb-table-cell>
-            <fwb-table-cell
-              v-if="appointments[day]?.[timeSlot]"
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 13 5.7-5.326a.909.909 0 0 0 0-1.348L1 1"
+              />
+            </svg>
+          </button>
+        </template>
+
+        <div v-for="day in schedule.dayOfWeek" :key="day">
+          <div
+            class="cursor-pointer rounded-t-lg px-6 py-4 hover:bg-gray-50"
+            :class="{
+              'rounded-t-lg bg-gray-50 text-blue-600': activeTab === day,
+            }"
+            @click="activeTab = day"
+          >
+            {{ day }}
+          </div>
+        </div>
+      </vue-horizontal>
+    </div>
+
+    <main>
+      <div v-for="day in visibleDays" :key="day">
+        <fwb-table hoverable striped class="max-h-144">
+          <fwb-table-head class="pt-10">
+            <fwb-table-head-cell>Time</fwb-table-head-cell>
+            <fwb-table-head-cell class="text-center">Appointment</fwb-table-head-cell>
+            <fwb-table-head-cell class="text-center">End Time</fwb-table-head-cell>
+            <fwb-table-head-cell class="text-center"><span></span></fwb-table-head-cell>
+          </fwb-table-head>
+          <fwb-table-body>
+            <fwb-table-row
+              v-for="timeSlot in generateTimeSlots(
+                schedule.startTime.toString(),
+                schedule.endTime.toString(),
+                appointments[day] || {}
+              )"
+              :key="timeSlot"
               :class="{
-                'line-through dark:text-white':
-                  appointments[day]?.[timeSlot]?.status === 'Completed',
+                'line-through': appointments[day]?.[timeSlot]?.status === 'Completed',
+                'dark:text-white': appointments[day]?.[timeSlot]?.status === 'Completed',
               }"
-              class="text-center"
             >
-              {{ appointments[day][timeSlot].endTime }}
-            </fwb-table-cell>
-            <fwb-table-cell v-else></fwb-table-cell>
-            <fwb-table-cell class="edit-cell">
-              <span v-if="appointments[day]?.[timeSlot]">
-                <FwbButton
-                  component="RouterLink"
-                  tag="router-link"
-                  :href="
-                    {
-                      name: 'appointmentEdit',
-                      params: { id: appointments[day][timeSlot].id },
-                    } as any
-                  "
-                  size="sm"
-                  color="alternative"
+              <fwb-table-cell>{{ timeSlot }}</fwb-table-cell>
+              <fwb-table-cell v-if="appointments[day]?.[timeSlot]" class="text-center">
+                <span
+                  class="cursor-pointer"
+                  v-tooltip="{
+                    content: `
+                    <p>👤 <b>${appointments[day][timeSlot].patient?.firstName} ${appointments[day][timeSlot].patient?.lastName}</b></p>
+                    <p>📱 Phone number: <b>${appointments[day][timeSlot].patient?.contactNumber}</b></p>
+                    <p>📝 Status: <b>${appointments[day][timeSlot].status}</b></p>
+                    <p>📆 Day: <b>${appointments[day][timeSlot].appointmentDay}</b></p>
+                    <p>🕓 Time: <b>${appointments[day][timeSlot].startTime} - ${appointments[day][timeSlot].endTime}</b></p>`,
+                    html: true,
+                    placement: 'bottom-start',
+                    defaultClass: 'custom-tooltip',
+                  }"
                 >
-                  Edit
-                </FwbButton>
-              </span>
-            </fwb-table-cell>
-          </fwb-table-row>
-        </fwb-table-body>
-      </fwb-table>
-    </fwb-tab>
-  </fwb-tabs>
+                  {{ appointments[day][timeSlot].appointmentType }}
+                </span>
+              </fwb-table-cell>
+              <fwb-table-cell v-else></fwb-table-cell>
+              <fwb-table-cell v-if="appointments[day]?.[timeSlot]" class="text-center">
+                {{ appointments[day][timeSlot].endTime }}
+              </fwb-table-cell>
+              <fwb-table-cell v-else></fwb-table-cell>
+              <fwb-table-cell class="edit-cell">
+                <span v-if="appointments[day]?.[timeSlot]">
+                  <template v-if="!isScheduleExpired(schedule)">
+                    <FwbButton
+                      component="RouterLink"
+                      tag="router-link"
+                      :href="
+                        {
+                          name: 'appointmentEdit',
+                          params: { id: appointments[day][timeSlot].id },
+                        } as any
+                      "
+                      size="sm"
+                      color="alternative"
+                    >
+                      Edit
+                    </FwbButton>
+                  </template>
+                </span>
+              </fwb-table-cell>
+            </fwb-table-row>
+          </fwb-table-body>
+        </fwb-table>
+      </div>
+    </main>
+  </div>
 </template>
 
 <style scoped>

@@ -23,7 +23,8 @@ const scheduleForm = ref({
 
 onBeforeMount(async () => {
   try {
-    const existingSchedules = await trpc.schedule.find.query()
+    const respone = await trpc.schedule.find.query({ latest: true })
+    const existingSchedules = respone.schedules
 
     const scheduleIdFromUrl = Number(route.params.scheduleId)
 

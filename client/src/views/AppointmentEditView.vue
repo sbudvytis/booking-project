@@ -41,7 +41,8 @@ const updateStatus = () => {
 onMounted(async () => {
   try {
     const existingAppointments = await trpc.appointment.find.query()
-    const schedules = await trpc.schedule.find.query()
+    const respone = await trpc.schedule.find.query({ latest: true })
+    const schedules = respone.schedules
 
     appointments.value = existingAppointments
 

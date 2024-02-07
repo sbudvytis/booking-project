@@ -54,6 +54,9 @@ export default authenticatedProcedure
         appointmentDay: appointmentData.appointmentDay,
       })
       .andWhere('user.id = :userId', { userId: authUser.id })
+      .andWhere('DentistSchedule.endDate > :currentDate', {
+        currentDate: new Date(),
+      })
       .getOne()
 
     if (!dentistSchedule) {

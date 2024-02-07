@@ -9,7 +9,8 @@ import { isScheduleExpired } from '../utils/scheduleUtils'
 const schedules = ref<ScheduleBare[]>([])
 
 onBeforeMount(async () => {
-  const rawSchedules = await trpc.schedule.find.query()
+  const response = await trpc.schedule.find.query({ latest: true })
+  const rawSchedules = response.schedules
   schedules.value = rawSchedules.filter((schedule) => !isScheduleExpired(schedule))
 })
 </script>

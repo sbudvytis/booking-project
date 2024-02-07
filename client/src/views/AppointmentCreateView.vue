@@ -32,7 +32,8 @@ const appointments = ref<AppointmentBare[]>([])
 
 onMounted(async () => {
   try {
-    const schedules = await trpc.schedule.find.query()
+    const respone = await trpc.schedule.find.query({ latest: true })
+    const schedules = respone.schedules
     const activeSchedules = schedules.filter((schedule) => !isScheduleExpired(schedule))
 
     appointments.value = await trpc.appointment.find.query()

@@ -21,10 +21,10 @@ it('should return a list of schedules', async () => {
     }),
   ])
 
-  const userSchedules = await find()
+  const userSchedules = await find({ page: 0, pageSize: 2, latest: false })
 
-  expect(userSchedules).toHaveLength(1)
-  expect(userSchedules[0]).toMatchObject({
+  expect(userSchedules.schedules).toHaveLength(1)
+  expect(userSchedules.schedules[0]).toMatchObject({
     scheduleId: expect.any(Number),
     userId: user.id,
     dayOfWeek: ['Sunday (21-01)'],

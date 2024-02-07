@@ -16,5 +16,10 @@ export default {
       body: ['"Inter var"', '"Inter"', '"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       mono: ['"Fira Code"', 'monospace'],
     },
+    extend: {
+      spacing: {
+        144: '36rem',
+      },
+    },
   },
 }
