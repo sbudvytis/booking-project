@@ -33,7 +33,6 @@ const navigation = computed(() =>
         <FwbNavbarLink
           v-for="link in navigation"
           :key="link.name"
-          :is-active="link.isActive"
           :link="({ name: link.name } as any)"
           link-attr="to"
           component="RouterLink"

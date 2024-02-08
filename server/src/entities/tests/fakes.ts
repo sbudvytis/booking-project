@@ -16,6 +16,7 @@ export const fakeUser = <T extends Partial<User>>(overrides: T = {} as T) => ({
   password: 'Password.123!',
   role: 'dentist',
   permissions: ['VIEW_APPOINTMENTS'],
+  isApproved: true,
   ...overrides,
 })
 

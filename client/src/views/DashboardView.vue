@@ -26,7 +26,7 @@ onBeforeMount(async () => {
       />
     </div>
     <FwbAlert v-else data-testid="scheduleListEmpty" class="text-center"
-      >You have not made your schedule yet</FwbAlert
+      >Looks like you have not created your schedule yet 😔</FwbAlert
     >
 
     <div class="mt-4 flex justify-center space-x-4">
@@ -49,7 +49,7 @@ onBeforeMount(async () => {
         data-testid="createSchedule"
         size="lg"
       >
-        Add a new schedule
+        Create a new schedule
       </FwbButton>
 
       <FwbButton

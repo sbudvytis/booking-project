@@ -6,6 +6,7 @@ const userSeed = {
   password: '$2b$10$sD53fzWIQBjXWfSDzuwmMOyY1ZAygLpRZlLxxPhcNG5r9BFWrNaDC',
   role: 'dentist',
   permissions: ['VIEW_APPOINTMENTS'],
+  isApproved: true,
 }
 
 const db = {

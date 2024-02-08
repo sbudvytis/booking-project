@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FwbNavbarLink } from 'flowbite-vue'
 import StackedLayout from './StackedLayout.vue'
-import { logout } from '@/stores/user'
+import { logout, canApproveUsers } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -12,11 +12,18 @@ function logoutUser() {
   logout()
   router.push({ name: 'Login' })
 }
+
+function adminPanel() {
+  router.push({ name: 'adminPanel' })
+}
 </script>
 
 <template>
   <StackedLayout :links="links">
     <template #menu>
+      <FwbNavbarLink v-if="canApproveUsers" @click.prevent="adminPanel" link="#"
+        >Admin Panel</FwbNavbarLink
+      >
       <FwbNavbarLink @click.prevent="logoutUser" link="#">Logout</FwbNavbarLink>
     </template>
   </StackedLayout>

@@ -17,14 +17,24 @@ const roles = [
   { value: 'staff', name: 'Staff' },
 ]
 
-const hasSucceeded = ref(false)
-
 const errorMessage = ref('')
+const hasSucceeded = ref(false)
+const successMessage = ref('')
+
 async function submitSignup() {
   try {
-    await signup(userForm.value)
+    const response = await signup(userForm.value)
 
     errorMessage.value = ''
+
+    // Check if the user is the first user
+    if (response.id === 1) {
+      successMessage.value =
+        'You have successfully signed up! This profile will be used as the admin'
+    } else {
+      successMessage.value =
+        'You have successfully signed up! Hang in there while we approve your profile'
+    }
 
     hasSucceeded.value = true
   } catch (error) {
@@ -56,13 +66,8 @@ async function submitSignup() {
         :required="true"
       />
 
-      <FwbAlert v-if="hasSucceeded" data-testid="successMessage" type="success">
-        You have successfully signed up! You can now log in.
-        <RouterLink
-          :to="{ name: 'Login' }"
-          class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >Go to the login page</RouterLink
-        >
+      <FwbAlert v-if="hasSucceeded" data-testid="successMessage" type="success" class="text-center">
+        {{ successMessage }}
       </FwbAlert>
       <AlertError :message="errorMessage">
         {{ errorMessage }}

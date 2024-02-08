@@ -24,17 +24,28 @@ export default publicProcedure
         password: true,
         role: true,
         permissions: true,
+        isApproved: true,
       },
       where: {
         email,
       },
-    })) as Pick<User, 'id' | 'password' | 'role' | 'permissions'> | undefined
+    })) as
+      | Pick<User, 'id' | 'password' | 'role' | 'permissions' | 'isApproved'>
+      | undefined
 
     if (!user) {
       logger.error('Could not find user with email %s', email)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'We could not find an account with this email address',
+      })
+    }
+
+    if (!user.isApproved) {
+      logger.error('User %s is not approved', email)
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Your account is pending approval',
       })
     }
 

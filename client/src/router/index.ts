@@ -44,6 +44,11 @@ const router = createRouter({
           name: 'scheduleAll',
           component: () => import('../views/AllSchedulesView.vue'),
         },
+        {
+          path: 'adminpanel',
+          name: 'adminPanel',
+          component: () => import('../views/AdminDashboardView.vue'),
+        },
       ],
     },
     {

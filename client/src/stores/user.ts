@@ -3,6 +3,7 @@ import {
   getStoredAccessToken,
   getUserIdFromToken,
   storeAccessToken,
+  getUserFromToken,
 } from '@/utils/auth'
 import { trpc } from '@/trpc'
 import { computed, ref } from 'vue'
@@ -28,3 +29,7 @@ export function logout() {
 }
 
 export const signup = trpc.user.signup.mutate
+
+export const canApproveUsers = computed(() =>
+  authToken.value ? getUserFromToken(authToken.value).permissions.includes('APPROVE_USERS') : false
+)

@@ -9,7 +9,7 @@ it('should create a dentists schedule', async () => {
   const user = await db.getRepository(User).save(fakeUser({ role: 'dentist' }))
   const { create } = scheduleRouter.createCaller(authContext({ db }, user))
 
-  const projectCreated = await create({
+  const scheduleCreated = await create({
     dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
@@ -17,7 +17,7 @@ it('should create a dentists schedule', async () => {
     endDate: '2024-02-11',
   })
 
-  expect(projectCreated).toMatchObject({
+  expect(scheduleCreated).toMatchObject({
     scheduleId: expect.any(Number),
     userId: user.id,
     dayOfWeek: ['Sunday (21-01)'],

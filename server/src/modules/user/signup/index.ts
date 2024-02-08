@@ -34,11 +34,16 @@ export default publicProcedure
     }
 
     try {
+      const isFirstUser = (await db.getRepository(User).count()) === 0
+
       const user = await db.getRepository(User).save({
         email,
         password: hash,
         role,
-        permissions: defaultPermissions,
+        permissions: isFirstUser
+          ? [...defaultPermissions, 'APPROVE_USERS']
+          : defaultPermissions,
+        isApproved: isFirstUser,
       })
 
       return {

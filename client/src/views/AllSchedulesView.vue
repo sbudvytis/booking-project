@@ -53,7 +53,12 @@ const cancelForm = () => {
       </div>
     </div>
     <FwbAlert v-else data-testid="scheduleListEmpty" class="text-center">
-      There are no schedules yet. You can create one by clicking the button below.
+      Looks like you have not created your schedule yet.
+      <RouterLink
+        :to="{ name: 'scheduleCreate' }"
+        class="font-semibold leading-6 text-blue-700 hover:text-indigo-500"
+        >You can create one by clicking this link</RouterLink
+      >
     </FwbAlert>
     <div class="mt-4 flex justify-center space-x-4">
       <FwbPagination
