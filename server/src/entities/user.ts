@@ -18,6 +18,12 @@ export class User {
   @Column('text')
   email: string
 
+  @Column('text')
+  firstName: string
+
+  @Column('text')
+  lastName: string
+
   @Column('text', { select: false })
   password: string
 
@@ -41,6 +47,8 @@ export type UserBare = Omit<User, 'appointments'>
 export const userSchema = validates<UserBare>().with({
   id: z.number().int().positive(),
   email: z.string().trim().toLowerCase().email(),
+  firstName: z.string().min(1).max(64),
+  lastName: z.string().min(1).max(64),
   password: z.string().min(8).max(64),
   isApproved: z.boolean(),
   role: z.string().min(1).max(64),

@@ -67,7 +67,6 @@ const generateTimeSlots = (
 const isScheduleValid = () => {
   const endDay = new Date(props.schedule.endDate)
 
-  // Create a new Date object for tomorrow
   const today = new Date()
   today.setDate(today.getDate() - 1)
 
@@ -75,7 +74,6 @@ const isScheduleValid = () => {
 }
 
 onMounted(async () => {
-  // Initial fetch for the first schedule's appointments
   await loadAppointments()
 })
 
@@ -205,9 +203,10 @@ const visibleDays = computed(() => {
                     content: `
                     <p>👤 <b>${appointments[day][timeSlot].patient?.firstName} ${appointments[day][timeSlot].patient?.lastName}</b></p>
                     <p>📱 Phone number: <b>${appointments[day][timeSlot].patient?.contactNumber}</b></p>
-                    <p>📝 Status: <b>${appointments[day][timeSlot].status}</b></p>
+                    <p>👀 Status: <b>${appointments[day][timeSlot].status}</b></p>
                     <p>📆 Day: <b>${appointments[day][timeSlot].appointmentDay}</b></p>
-                    <p>🕓 Time: <b>${appointments[day][timeSlot].startTime} - ${appointments[day][timeSlot].endTime}</b></p>`,
+                    <p>🕓 Time: <b>${appointments[day][timeSlot].startTime} - ${appointments[day][timeSlot].endTime}</b></p>
+                    <p>📝 Additional notes: <b>${appointments[day][timeSlot].notes}</b></p>`,
                     html: true,
                     placement: 'bottom-start',
                     defaultClass: 'custom-tooltip',

@@ -10,6 +10,8 @@ const userForm = ref({
   email: '',
   password: '',
   role: '',
+  firstName: '',
+  lastName: '',
 })
 
 const roles = [
@@ -47,6 +49,10 @@ async function submitSignup() {
 <template>
   <PageForm heading="Sign up for an account" formLabel="Signup" @submit="submitSignup">
     <template #default>
+      <FwbInput label="First name" type="text" v-model="userForm.firstName" :required="true" />
+
+      <FwbInput label="Last name" type="text" v-model="userForm.lastName" :required="true" />
+
       <FwbInput label="Email" type="email" v-model="userForm.email" :required="true" />
 
       <FwbInput

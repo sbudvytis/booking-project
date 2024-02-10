@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { trpc } from '@/trpc'
 import { onBeforeMount, ref, computed } from 'vue'
-import { FwbAlert, FwbButton } from 'flowbite-vue'
+import { FwbAlert, FwbButton, FwbSelect } from 'flowbite-vue'
 import type { ScheduleWithUser } from '@mono/server/src/shared/entities'
 import Schedule from '@/components/Schedule.vue'
 import { isScheduleExpired } from '../utils/scheduleUtils'
-import { isDentist } from '@/stores/user'
+import { isDentist, canViewAllSchedules } from '@/stores/user'
 
 const schedules = ref<ScheduleWithUser[]>([])
 
@@ -16,24 +16,34 @@ onBeforeMount(async () => {
   })
   const rawSchedules = response.schedules
   schedules.value = rawSchedules.filter((schedule) => !isScheduleExpired(schedule))
-  selectedScheduleId.value = schedules.value[0]?.scheduleId
+  selectedScheduleId.value = schedules.value[0]?.scheduleId?.toString() || ''
 })
 
-const selectedScheduleId = ref(schedules.value[0]?.scheduleId)
+const selectedScheduleId = ref<string>('')
 
 const selectedSchedule = computed(() =>
-  schedules.value.find((schedule) => schedule.scheduleId === selectedScheduleId.value)
+  schedules.value.find((schedule) => String(schedule.scheduleId) === selectedScheduleId.value)
+)
+
+const schedulesOptions = computed(() =>
+  schedules.value.map((schedule) => ({
+    value: String(schedule.scheduleId),
+    name: `${schedule.user.firstName}'s (${schedule.user.email}) schedule from ${schedule.startDate} to ${schedule.endDate}`,
+  }))
 )
 </script>
 
 <template>
   <div class="DashboardView">
-    <select v-if="!isDentist" v-model="selectedScheduleId" class="form-select">
-      <option v-for="schedule in schedules" :key="schedule.scheduleId" :value="schedule.scheduleId">
-        {{ schedule.user.email }} - {{ schedule.scheduleId }}
-      </option>
-    </select>
-
+    <div class="mt-3">
+      <FwbSelect
+        v-if="!isDentist"
+        v-model="selectedScheduleId"
+        id="scheduleSelect"
+        :options="schedulesOptions"
+        label="Select Schedule"
+      />
+    </div>
     <div v-if="selectedSchedule && !isScheduleExpired(selectedSchedule)" data-testid="scheduleList">
       <Schedule :schedule="selectedSchedule" :displayExpired="false" />
     </div>
@@ -43,7 +53,7 @@ const selectedSchedule = computed(() =>
 
     <div class="mt-4 flex justify-center space-x-4">
       <FwbButton
-        v-if="selectedSchedule && !isScheduleExpired(selectedSchedule)"
+        v-if="selectedSchedule && !isScheduleExpired(selectedSchedule) && !canViewAllSchedules"
         component="RouterLink"
         tag="router-link"
         :href="{ name: 'scheduleEdit', params: { scheduleId: selectedSchedule.scheduleId } } as any"
@@ -54,7 +64,7 @@ const selectedSchedule = computed(() =>
       </FwbButton>
 
       <FwbButton
-        v-else
+        v-else-if="!canViewAllSchedules"
         component="RouterLink"
         tag="router-link"
         :href="{ name: 'scheduleCreate' } as any"
@@ -79,6 +89,7 @@ const selectedSchedule = computed(() =>
       </FwbButton>
 
       <FwbButton
+        v-if="!canViewAllSchedules"
         component="RouterLink"
         tag="router-link"
         :href="{ name: 'scheduleAll' } as any"

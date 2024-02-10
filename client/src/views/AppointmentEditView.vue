@@ -34,7 +34,6 @@ const appointments = ref<AppointmentBare[]>([])
 const completedCheckbox = ref(false)
 
 const updateStatus = () => {
-  // Update status based on checkbox value
   appointmentForm.value.status = completedCheckbox.value ? 'Completed' : 'Active'
 }
 
@@ -83,14 +82,14 @@ onMounted(async () => {
       const startHour = parseInt(schedule.startTime.split(':')[0], 10)
       const endHour = parseInt(schedule.endTime.split(':')[0], 10)
 
-      // Populate start times array with 30-minute intervals
+      // Populates start times array with 30-minute intervals
       for (let i = startHour; i < endHour; i++) {
         for (let j = 0; j < 60; j += 30) {
           allStartTimes.push(`${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`)
         }
       }
 
-      // Populate end times array with 30-minute intervals, up to the schedule's end time
+      // Populates end times array with 30-minute intervals, up to the schedule's end time
       for (let i = startHour; i <= endHour; i++) {
         for (let j = 0; j < 60; j += 30) {
           const endTime = `${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`
@@ -101,7 +100,6 @@ onMounted(async () => {
       }
     })
 
-    // Removes duplicates and set values
     availableStartTimes.value = [...new Set(allStartTimes)].map((time) => ({
       value: time,
       name: time,
@@ -238,6 +236,7 @@ const cancelForm = () => {
           v-model="appointmentForm.appointmentType"
           id="appointmentType"
           label="Appointment Type"
+          maxlength="20"
           required
         />
 

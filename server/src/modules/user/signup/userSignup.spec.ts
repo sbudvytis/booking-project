@@ -34,6 +34,8 @@ it('should save a user', async () => {
   expect(response).toEqual({
     id: expect.any(Number),
     email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
     role: user.role,
     permissions: expect.any(Array),
   })
@@ -44,6 +46,8 @@ it('should save a user', async () => {
 it('should require a valid email', async () => {
   await expect(
     signup({
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'user-email-invalid',
       password: 'password.123',
       role: 'Dentist',
@@ -54,6 +58,8 @@ it('should require a valid email', async () => {
 it('should require a password with at least 8 characters', async () => {
   await expect(
     signup({
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'user2@domain.com',
       password: 'pas.123',
       role: 'Dentist',
@@ -64,6 +70,8 @@ it('should require a password with at least 8 characters', async () => {
 it('throws an error for invalid email', async () => {
   await expect(
     signup({
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'not-an-email',
       password: 'some-password',
       role: 'Dentist',
