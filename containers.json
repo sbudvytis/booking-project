@@ -18,10 +18,10 @@
       "NODE_ENV": "production",
       "DB_SSL": "true",
       "DB_SYNC": "true",
-      "DB_HOST": "ep-cool-rice-a2n41imw.eu-central-1.aws.neon.tech",
+      "DB_HOST": "ep-morning-mountain-a2a02vl3.eu-central-1.aws.neon.tech",
       "DB_NAME": "bookings",
       "DB_USER": "turingcollegeproject",
-      "DB_PASSWORD": "9hQrXulkEB0O",
+      "DB_PASSWORD": "mVj7WSncMkA6",
       "TOKEN_KEY": "supersecretkey",
       "EMAIL": "sarunas@budvytis.me",
       "PASSWORD": "SaugusPassas26."
