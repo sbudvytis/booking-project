@@ -11,12 +11,12 @@ export default authenticatedProcedure
   .mutation(async ({ input: { scheduleId }, ctx: { authUser, db } }) => {
     if (!authUser || authUser.role !== 'dentist') {
       logger.error(
-        'User does not have the required role or permissions to delete a schedule.'
+        'User does not have the required permissions to delete a schedule.'
       )
       throw new TRPCError({
         code: 'FORBIDDEN',
         message:
-          'Permission denied. You do not have the required role or permissions to delete a schedule.',
+          'Permission denied. You do not have the required permissions to delete a schedule.',
       })
     }
 

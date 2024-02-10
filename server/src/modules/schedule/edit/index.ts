@@ -13,7 +13,7 @@ export default authenticatedProcedure
       throw new TRPCError({
         code: 'FORBIDDEN',
         message:
-          'Permission denied. You do not have the required role or permissions to edit an schedule.',
+          'Permission denied. You do not have the required permissions to edit a schedule.',
       })
     }
 

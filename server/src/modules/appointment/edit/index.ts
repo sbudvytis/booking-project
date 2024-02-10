@@ -10,11 +10,11 @@ export default authenticatedProcedure
       const userPermissions = authUser.permissions || []
       const userRole = authUser.role || ''
 
-      // Check if the user has the required permission to add an appointment
-      const canCreateAppointment =
+      // Checks if the user has the required permission to edit an appointment
+      const canEditAppointment =
         userRole === 'dentist' || userPermissions.includes('VIEW_ALL_SCHEDULES')
 
-      if (!authUser || !canCreateAppointment) {
+      if (!authUser || !canEditAppointment) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message:
@@ -31,14 +31,6 @@ export default authenticatedProcedure
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Appointment not found.',
-        })
-      }
-
-      // Check if the authenticated user has the right to edit this appointment
-      if (existingAppointment.userId !== authUser.id) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'You do not have the right to edit this appointment.',
         })
       }
 

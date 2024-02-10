@@ -27,6 +27,7 @@ it('should create an appointment', async () => {
     notes: 'checkup',
     email: 'john@doe.com',
     status: 'Active',
+    scheduleId: schedule.scheduleId,
     patientData: {
       firstName: patient.firstName,
       lastName: patient.lastName,
@@ -81,6 +82,7 @@ it('should not create a new patient if the patient already exists', async () => 
     notes: 'checkup',
     email: patient.email,
     status: 'Active',
+    scheduleId: schedule.scheduleId,
     patientData: {
       firstName: patient.firstName,
       lastName: patient.lastName,
@@ -135,6 +137,7 @@ it('should throw an error when unauthorized person creates appointment', async (
       notes: 'checkup',
       email: 'john@doe.com',
       status: 'Active',
+      scheduleId: 1,
       patientData: {
         firstName: patient.firstName,
         lastName: patient.lastName,
@@ -163,6 +166,7 @@ it('should throw an error when patient data is not provided', async () => {
       notes: 'checkup',
       email: 'john@doe.com',
       status: 'Active',
+      scheduleId: 1,
       patientData: {
         firstName: '',
         lastName: '',
@@ -190,6 +194,7 @@ it('should throw an error when dentist schedule is not found', async () => {
       notes: 'checkup',
       email: 'john@doe.com',
       status: 'Active',
+      scheduleId: 1,
       patientData: {
         firstName: patient.firstName,
         lastName: patient.lastName,

@@ -33,3 +33,13 @@ export const signup = trpc.user.signup.mutate
 export const canApproveUsers = computed(() =>
   authToken.value ? getUserFromToken(authToken.value).permissions.includes('APPROVE_USERS') : false
 )
+
+export const canViewAllSchedules = computed(() =>
+  authToken.value
+    ? getUserFromToken(authToken.value).permissions.includes('VIEW_ALL_SCHEDULES')
+    : false
+)
+
+export const isDentist = computed(() =>
+  authToken.value ? getUserFromToken(authToken.value).role === 'dentist' : false
+)

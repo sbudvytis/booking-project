@@ -27,7 +27,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Check if the patient data is provided
+    // Checks if the patient data is provided
     if (!appointmentData.patientData) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -35,13 +35,13 @@ export default authenticatedProcedure
       })
     }
 
-    // Check if a patient with the same email already exists in the database
+    // Checks if a patient with the same email already exists in the database
     let patient = await db.getRepository(Patient).findOne({
       where: { email: appointmentData.patientData.email },
     })
 
     if (!patient) {
-      // If the patient does not exist, create a new one
+      // If the patient does not exist, creates a new one
       patient = db.getRepository(Patient).create(appointmentData.patientData)
       patient = await db.getRepository(Patient).save(patient)
     }
@@ -50,10 +50,9 @@ export default authenticatedProcedure
       .getRepository(DentistSchedule)
       .createQueryBuilder('DentistSchedule')
       .innerJoinAndSelect('DentistSchedule.user', 'user')
-      .where(':appointmentDay = ANY("DentistSchedule"."day_of_week")', {
-        appointmentDay: appointmentData.appointmentDay,
+      .andWhere('DentistSchedule.scheduleId = :scheduleId', {
+        scheduleId: appointmentData.scheduleId,
       })
-      .andWhere('user.id = :userId', { userId: authUser.id })
       .andWhere('DentistSchedule.endDate > :currentDate', {
         currentDate: new Date(),
       })
@@ -66,7 +65,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Create an appointment and assign it to the patient
+    // Creates an appointment and assign it to the patient
     const appointment = db.getRepository(Appointment).create({
       ...appointmentData,
       userId: authUser.id,
@@ -78,7 +77,7 @@ export default authenticatedProcedure
       .getRepository(Appointment)
       .save(appointment)
 
-    // Send email
+    // Sends email to the patient
     setImmediate(async () => {
       const transporter = nodemailer.createTransport({
         host: 'smtp.hostinger.com',

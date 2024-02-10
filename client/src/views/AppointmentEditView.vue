@@ -40,8 +40,11 @@ const updateStatus = () => {
 
 onMounted(async () => {
   try {
-    const existingAppointments = await trpc.appointment.find.query()
-    const respone = await trpc.schedule.find.query({ latest: true })
+    const scheduleIdFromRoute = Number(route.params.scheduleId)
+    const existingAppointments = await trpc.appointment.find.query({
+      scheduleId: scheduleIdFromRoute,
+    })
+    const respone = await trpc.schedule.find.query({ scheduleId: scheduleIdFromRoute })
     const schedules = respone.schedules
 
     appointments.value = existingAppointments

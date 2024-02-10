@@ -92,9 +92,7 @@ const [deleteSchedule] = useErrorMessage(async () => {
 
     const existingAppointments = await trpc.appointment.get.query(scheduleId)
 
-    console.log('Existing appointments:', existingAppointments) // Added for debugging
-
-    // Check if the list of appointments is empty
+    // Checks if the list of appointments is empty
     if (existingAppointments.length > 0) {
       errorMessage.value = 'Cannot delete schedule with existing appointments.'
       return
@@ -103,17 +101,9 @@ const [deleteSchedule] = useErrorMessage(async () => {
     await trpc.schedule.remove.mutate(scheduleForm.value)
     router.push({ name: 'Dashboard' })
   } catch (error) {
-    console.error('Error deleting schedule:', error)
-    errorMessage.value = 'An error occurred while deleting the schedule.'
+    errorMessage.value = (error as Error).message || 'An unknown error occurred.'
   }
 })
-
-watch(
-  () => scheduleForm.value.dayOfWeek,
-  () => {
-    validateForm()
-  }
-)
 
 watch(
   () => scheduleForm.value.dayOfWeek,

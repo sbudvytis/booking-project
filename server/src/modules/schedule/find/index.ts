@@ -1,6 +1,6 @@
 import {
   DentistSchedule,
-  type ScheduleBare,
+  type ScheduleWithUser,
 } from '@server/entities/dentistSchedule'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import { z } from 'zod'
@@ -9,12 +9,20 @@ const inputSchema = z.object({
   page: z.number().optional(),
   pageSize: z.number().optional(),
   latest: z.boolean().optional(),
+  all: z.boolean().optional(),
+  scheduleId: z.number().optional(),
 })
 
 export default authenticatedProcedure
   .input(inputSchema)
   .query(async ({ input, ctx: { authUser, db } }) => {
-    const { page = 0, pageSize = 2, latest = false } = input
+    const {
+      page = 0,
+      pageSize = 2,
+      latest = false,
+      all = false,
+      scheduleId,
+    } = input
     const userId = authUser.id
 
     const userPermissions = authUser.permissions || []
@@ -22,23 +30,44 @@ export default authenticatedProcedure
 
     const canViewAllSchedules = userPermissions.includes('VIEW_ALL_SCHEDULES')
 
-    let schedules
+    let skip
+    let take
 
-    if (canViewAllSchedules || userRole === 'dentist') {
-      schedules = (await db.getRepository(DentistSchedule).find({
-        where: canViewAllSchedules ? {} : { userId },
-        order: { scheduleId: 'DESC' },
-        skip: latest ? 0 : page * pageSize,
-        take: latest ? 1 : pageSize,
-      })) as ScheduleBare[]
+    if (all) {
+      skip = 0
+      take = undefined
+    } else if (latest) {
+      skip = 0
+      take = 1
     } else {
-      schedules = (await db.getRepository(DentistSchedule).find({
-        where: { userId },
-        order: { scheduleId: 'DESC' },
-        skip: latest ? 0 : page * pageSize,
-        take: latest ? 1 : pageSize,
-      })) as ScheduleBare[]
+      skip = page * pageSize
+      take = pageSize
     }
+
+    let schedulesQuery = db
+      .getRepository(DentistSchedule)
+      .createQueryBuilder('schedule')
+      .leftJoinAndSelect('schedule.user', 'user')
+
+    if (scheduleId) {
+      schedulesQuery = schedulesQuery.where(
+        'schedule.scheduleId = :scheduleId',
+        { scheduleId }
+      )
+    } else if (canViewAllSchedules || userRole === 'dentist') {
+      schedulesQuery = schedulesQuery.where(
+        canViewAllSchedules ? {} : { userId }
+      )
+    } else {
+      schedulesQuery = schedulesQuery.where({ userId })
+    }
+
+    schedulesQuery = schedulesQuery
+      .orderBy('schedule.scheduleId', 'DESC')
+      .skip(skip)
+      .take(take)
+
+    const schedules = (await schedulesQuery.getMany()) as ScheduleWithUser[]
 
     const total = await db.getRepository(DentistSchedule).count({
       where: canViewAllSchedules ? {} : { userId },

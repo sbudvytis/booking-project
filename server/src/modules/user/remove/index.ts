@@ -11,7 +11,7 @@ export default authenticatedProcedure
     const canRemoveUsers = userPermissions.includes('APPROVE_USERS')
     if (!canRemoveUsers) {
       logger.error(
-        'User does not have the required permissions to delete a schedule.'
+        'User does not have the required permissions to remove a user.'
       )
       throw new TRPCError({
         code: 'FORBIDDEN',

@@ -1,29 +1,41 @@
 <script lang="ts" setup>
 import { trpc } from '@/trpc'
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import { FwbAlert, FwbButton } from 'flowbite-vue'
-import type { ScheduleBare } from '@mono/server/src/shared/entities'
+import type { ScheduleWithUser } from '@mono/server/src/shared/entities'
 import Schedule from '@/components/Schedule.vue'
 import { isScheduleExpired } from '../utils/scheduleUtils'
+import { isDentist } from '@/stores/user'
 
-const schedules = ref<ScheduleBare[]>([])
+const schedules = ref<ScheduleWithUser[]>([])
 
 onBeforeMount(async () => {
-  const response = await trpc.schedule.find.query({ latest: true })
+  const response = await trpc.schedule.find.query({
+    all: true,
+    latest: isDentist.value,
+  })
   const rawSchedules = response.schedules
   schedules.value = rawSchedules.filter((schedule) => !isScheduleExpired(schedule))
+  selectedScheduleId.value = schedules.value[0]?.scheduleId
 })
+
+const selectedScheduleId = ref(schedules.value[0]?.scheduleId)
+
+const selectedSchedule = computed(() =>
+  schedules.value.find((schedule) => schedule.scheduleId === selectedScheduleId.value)
+)
 </script>
 
 <template>
   <div class="DashboardView">
-    <div v-if="schedules.length && !isScheduleExpired(schedules[0])" data-testid="scheduleList">
-      <Schedule
-        v-for="schedule in schedules"
-        :key="schedule.scheduleId"
-        :schedule="schedule"
-        :displayExpired="false"
-      />
+    <select v-if="!isDentist" v-model="selectedScheduleId" class="form-select">
+      <option v-for="schedule in schedules" :key="schedule.scheduleId" :value="schedule.scheduleId">
+        {{ schedule.user.email }} - {{ schedule.scheduleId }}
+      </option>
+    </select>
+
+    <div v-if="selectedSchedule && !isScheduleExpired(selectedSchedule)" data-testid="scheduleList">
+      <Schedule :schedule="selectedSchedule" :displayExpired="false" />
     </div>
     <FwbAlert v-else data-testid="scheduleListEmpty" class="text-center"
       >Looks like you have not created your schedule yet 😔</FwbAlert
@@ -31,10 +43,10 @@ onBeforeMount(async () => {
 
     <div class="mt-4 flex justify-center space-x-4">
       <FwbButton
-        v-if="schedules.length && !isScheduleExpired(schedules[0])"
+        v-if="selectedSchedule && !isScheduleExpired(selectedSchedule)"
         component="RouterLink"
         tag="router-link"
-        :href="{ name: 'scheduleEdit', params: { scheduleId: schedules[0].scheduleId } } as any"
+        :href="{ name: 'scheduleEdit', params: { scheduleId: selectedSchedule.scheduleId } } as any"
         data-testid="editSchedule"
         size="lg"
       >
@@ -53,10 +65,12 @@ onBeforeMount(async () => {
       </FwbButton>
 
       <FwbButton
-        v-if="schedules.length && !isScheduleExpired(schedules[0])"
+        v-if="selectedSchedule && !isScheduleExpired(selectedSchedule)"
         component="RouterLink"
         tag="router-link"
-        :href="{ name: 'appointmentCreate' } as any"
+        :href="
+          { name: 'appointmentCreate', params: { scheduleId: selectedSchedule.scheduleId } } as any
+        "
         data-testid="createAppointment"
         size="lg"
         color="yellow"

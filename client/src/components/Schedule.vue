@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ScheduleBare, AppointmentBare } from '@mono/server/src/shared/entities'
-import { ref, onMounted, computed, type Ref } from 'vue'
+import { ref, onMounted, computed, type Ref, watch } from 'vue'
 import { trpc } from '@/trpc'
 import {
   FwbTable,
@@ -75,9 +75,28 @@ const isScheduleValid = () => {
 }
 
 onMounted(async () => {
-  // Check if the schedule is valid before fetching appointments
+  // Initial fetch for the first schedule's appointments
+  await loadAppointments()
+})
+
+watch(
+  () => props.schedule.scheduleId,
+  async (newScheduleId) => {
+    await loadAppointments(newScheduleId)
+
+    const currentActualDay = getDaysBetweenDates(
+      currentDate.toISOString(),
+      currentDate.toISOString()
+    )[0]
+    activeTab.value = props.schedule.dayOfWeek.includes(currentActualDay)
+      ? currentActualDay
+      : props.schedule.dayOfWeek[0]
+  }
+)
+
+async function loadAppointments(scheduleId = props.schedule.scheduleId) {
   if (isScheduleValid()) {
-    const appts = await trpc.appointment.find.query()
+    const appts = await trpc.appointment.find.query({ scheduleId })
     appointments.value = appts.reduce(
       (acc, appt) => {
         acc[appt.appointmentDay] = acc[appt.appointmentDay] || {}
@@ -87,7 +106,7 @@ onMounted(async () => {
       {} as typeof appointments.value
     )
   }
-})
+}
 
 const visibleDays = computed(() => {
   return props.schedule.dayOfWeek.filter((day) => day === activeTab.value)
@@ -211,7 +230,10 @@ const visibleDays = computed(() => {
                       :href="
                         {
                           name: 'appointmentEdit',
-                          params: { id: appointments[day][timeSlot].id },
+                          params: {
+                            scheduleId: schedule.scheduleId,
+                            id: appointments[day][timeSlot].id,
+                          },
                         } as any
                       "
                       size="sm"

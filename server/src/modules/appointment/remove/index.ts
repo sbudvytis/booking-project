@@ -32,17 +32,6 @@ export default authenticatedProcedure
       })
     }
 
-    // Check if the authenticated user has the right to delete this appointment
-    if (
-      !userPermissions.includes('VIEW_ALL_SCHEDULES') &&
-      existingAppointment.userId !== authUser.id
-    ) {
-      throw new TRPCError({
-        code: 'FORBIDDEN',
-        message: 'You do not have the right to delete this appointment.',
-      })
-    }
-
     // Delete the appointment from the database
     await db.getRepository(Appointment).delete(id)
 

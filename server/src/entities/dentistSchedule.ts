@@ -45,6 +45,7 @@ export class DentistSchedule {
 }
 
 export type ScheduleBare = Omit<DentistSchedule, 'user' | 'appointments'>
+export type ScheduleWithUser = ScheduleBare & { user: User }
 
 export const scheduleSchema = validates<ScheduleBare>().with({
   scheduleId: z.number().int().positive(),

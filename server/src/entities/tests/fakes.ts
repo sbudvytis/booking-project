@@ -27,7 +27,7 @@ export const fakeUser = <T extends Partial<User>>(overrides: T = {} as T) => ({
 export const fakeSchedule = <T extends Partial<DentistSchedule>>(
   overrides: T = {} as T
 ) => ({
-  id: 1,
+  scheduleId: randomId(),
   userId: randomId(),
   dayOfWeek: ['Sunday (21-01)'],
   startTime: '10',
@@ -62,7 +62,7 @@ export const fakeAppointment = <T extends Partial<Appointment>>(
   id: 1,
   userId: randomId(),
   patientId: randomId(),
-  scheduleId: randomId(),
+  scheduleId: 1,
   appointmentType: 'Checkup',
   appointmentDay: 'Sunday (21-01)',
   startTime: '10',

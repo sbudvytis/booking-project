@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { trpc } from '@/trpc'
 import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import useErrorMessage from '@/composables/useErrorMessage'
 import AlertError from '@/components/AlertError.vue'
 import AppointmentForm from '@/components/AppointmentForm.vue'
@@ -10,6 +10,7 @@ import type { AppointmentBare } from '@mono/server/src/shared/entities'
 import { isScheduleExpired } from '../utils/scheduleUtils'
 
 const router = useRouter()
+const route = useRoute()
 
 const appointmentForm = ref({
   appointmentType: '',
@@ -32,11 +33,12 @@ const appointments = ref<AppointmentBare[]>([])
 
 onMounted(async () => {
   try {
-    const respone = await trpc.schedule.find.query({ latest: true })
-    const schedules = respone.schedules
+    const scheduleIdFromRoute = Number(route.params.scheduleId)
+    const response = await trpc.schedule.find.query({ scheduleId: scheduleIdFromRoute })
+    const schedules = response.schedules
     const activeSchedules = schedules.filter((schedule) => !isScheduleExpired(schedule))
 
-    appointments.value = await trpc.appointment.find.query()
+    appointments.value = await trpc.appointment.find.query({ scheduleId: scheduleIdFromRoute })
 
     // Uses only active schedules for availableDays
     availableDays.value = [
@@ -85,8 +87,15 @@ onMounted(async () => {
 })
 
 const [createAppointment, errorMessage] = useErrorMessage(async () => {
+  const scheduleIdFromRoute = Number(route.params.scheduleId)
+  const respone = await trpc.schedule.find.query({ scheduleId: scheduleIdFromRoute })
+  const schedules = respone.schedules
+
+  const existingSchedule = schedules.find((schedule) => schedule.scheduleId === scheduleIdFromRoute)
+
   const appointmentData = {
     ...appointmentForm.value,
+    scheduleId: existingSchedule?.scheduleId || 0,
     patientData: {
       firstName: appointmentForm.value.firstName,
       lastName: appointmentForm.value.lastName,

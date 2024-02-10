@@ -65,7 +65,7 @@ it('should throw an error when staff tries to delete a schedule', async () => {
     })
   } catch (error) {
     expect((error as Error).message).toEqual(
-      'Permission denied. You do not have the required role or permissions to delete a schedule.'
+      'Permission denied. You do not have the required permissions to delete a schedule.'
     )
   }
 })

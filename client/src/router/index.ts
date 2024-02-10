@@ -29,13 +29,13 @@ const router = createRouter({
           props: true,
         },
         {
-          path: 'appointment/create',
+          path: 'schedule/:scheduleId/appointment/create',
           name: 'appointmentCreate',
           component: () => import('../views/AppointmentCreateView.vue'),
           props: true,
         },
         {
-          path: 'appointment/edit/:id',
+          path: 'schedule/:scheduleId/appointment/edit/:id',
           name: 'appointmentEdit',
           component: () => import('../views/AppointmentEditView.vue'),
         },

@@ -76,7 +76,7 @@ it("should deny a staff member from editing a dentist's schedule", async () => {
     })
   } catch (error) {
     expect((error as Error).message).toEqual(
-      'Permission denied. You do not have the required role or permissions to edit an schedule.'
+      'Permission denied. You do not have the required permissions to edit a schedule.'
     )
   }
 })
