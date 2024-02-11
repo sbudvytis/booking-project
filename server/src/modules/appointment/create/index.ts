@@ -15,7 +15,7 @@ export default authenticatedProcedure
     const userPermissions = authUser.permissions || []
     const userRole = authUser.role || ''
 
-    // Check if the user has the required permission to add an appointment
+    // Checks if the user has the required permission to add an appointment
     const canCreateAppointment =
       userRole === 'dentist' || userPermissions.includes('VIEW_ALL_SCHEDULES')
 

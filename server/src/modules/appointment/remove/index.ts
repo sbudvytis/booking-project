@@ -5,7 +5,7 @@ import { TRPCError } from '@trpc/server'
 export default authenticatedProcedure
   .input(appointmentSchema)
   .mutation(async ({ input: { id }, ctx: { authUser, db } }) => {
-    // Check if the authenticated user has the required role and permissions
+    // Checks if the authenticated user has the required role and permissions
     const userPermissions = authUser?.permissions || []
 
     if (
@@ -20,7 +20,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Fetch the existing appointment from the database
+    // Fetches the existing appointment from the database
     const existingAppointment = await db.getRepository(Appointment).findOne({
       where: { id },
     })
@@ -32,7 +32,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Delete the appointment from the database
+    // Deletes the appointment from the database
     await db.getRepository(Appointment).delete(id)
 
     return { success: true, message: 'Appointment deleted successfully' }

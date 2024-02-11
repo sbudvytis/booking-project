@@ -7,12 +7,12 @@ export default authenticatedProcedure
   .mutation(async ({ input: patientData, ctx: { authUser, db } }) => {
     const userPermissions = authUser.permissions || []
     const userRole = authUser.role || ''
-    // Check if the authenticated user has the required role and permissions
 
-    const canCreateAppointment =
+    // Checks if the authenticated user has the required role and permissions
+    const canCreatePatient =
       userRole === 'dentist' || userPermissions.includes('VIEW_ALL_SCHEDULES')
 
-    if (!authUser || !canCreateAppointment) {
+    if (!authUser || !canCreatePatient) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message:

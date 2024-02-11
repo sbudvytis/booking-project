@@ -9,7 +9,7 @@ import logger from '@server/logger'
 export default authenticatedProcedure
   .input(scheduleInsertSchema.omit({ userId: true }))
   .mutation(async ({ input: scheduleData, ctx: { authUser, db } }) => {
-    // Check if the authenticated user has the required role and permissions to add a schedule
+    // Checks if the authenticated user has the required role and permissions to add a schedule
     if (!authUser || authUser.role !== 'dentist') {
       throw new TRPCError({
         code: 'FORBIDDEN',

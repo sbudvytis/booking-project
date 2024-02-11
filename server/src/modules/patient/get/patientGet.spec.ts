@@ -23,3 +23,17 @@ it('should get a patient by id', async () => {
     email: 'john@doe.com',
   })
 })
+
+it('should throw an error when patient is not found', async () => {
+  const db = await createTestDatabase()
+  const { get } = patientRouter.createCaller(authContext({ db }))
+
+  try {
+    await get(999)
+  } catch (error) {
+    expect(error).toMatchObject({
+      code: 'NOT_FOUND',
+      message: 'Patient was not found',
+    })
+  }
+})

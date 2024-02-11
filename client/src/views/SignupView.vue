@@ -49,11 +49,23 @@ async function submitSignup() {
 <template>
   <PageForm heading="Sign up for an account" formLabel="Signup" @submit="submitSignup">
     <template #default>
-      <FwbInput label="First name" type="text" v-model="userForm.firstName" :required="true" />
+      <FwbInput
+        id="firstName"
+        label="First name"
+        type="text"
+        v-model="userForm.firstName"
+        :required="true"
+      />
 
-      <FwbInput label="Last name" type="text" v-model="userForm.lastName" :required="true" />
+      <FwbInput
+        id="lastName"
+        label="Last name"
+        type="text"
+        v-model="userForm.lastName"
+        :required="true"
+      />
 
-      <FwbInput label="Email" type="email" v-model="userForm.email" :required="true" />
+      <FwbInput id="email" label="Email" type="email" v-model="userForm.email" :required="true" />
 
       <FwbInput
         label="Password"
@@ -66,6 +78,7 @@ async function submitSignup() {
       />
 
       <FwbSelect
+        id="role"
         label="Select your role"
         v-model="userForm.role"
         :options="roles"

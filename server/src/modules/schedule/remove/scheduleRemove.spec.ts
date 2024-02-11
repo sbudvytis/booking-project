@@ -69,3 +69,55 @@ it('should throw an error when staff tries to delete a schedule', async () => {
     )
   }
 })
+
+it('should throw an error when the schedule does not exist', async () => {
+  const db = await createTestDatabase()
+  const user = await db.getRepository(User).save(fakeUser({ role: 'dentist' }))
+  const { remove } = scheduleRouter.createCaller(authContext({ db }, user))
+
+  try {
+    await remove({
+      scheduleId: 999,
+      userId: user.id,
+      dayOfWeek: ['Sunday (21-01)'],
+      startTime: '11',
+      endTime: '14',
+      startDate: '2024-01-21',
+      endDate: '2024-02-11',
+    })
+  } catch (error) {
+    expect((error as Error).message).toEqual('Schedule not found.')
+  }
+})
+
+it('should throw an error when the user does not have the right to delete the schedule', async () => {
+  const db = await createTestDatabase()
+  const user = await db.getRepository(User).save(fakeUser({ role: 'dentist' }))
+  const user2 = await db.getRepository(User).save(fakeUser({ role: 'dentist' }))
+  const { remove } = scheduleRouter.createCaller(authContext({ db }, user))
+
+  const schedule = await db.getRepository(DentistSchedule).save({
+    userId: user2.id,
+    dayOfWeek: ['Sunday (21-01)'],
+    startTime: '11',
+    endTime: '14',
+    startDate: '2024-01-21',
+    endDate: '2024-02-11',
+  })
+
+  try {
+    await remove({
+      scheduleId: schedule.scheduleId,
+      userId: user.id,
+      dayOfWeek: ['Sunday (21-01)'],
+      startTime: '11',
+      endTime: '14',
+      startDate: '2024-01-21',
+      endDate: '2024-02-11',
+    })
+  } catch (error) {
+    expect((error as Error).message).toEqual(
+      'You do not have the right to delete this schedule.'
+    )
+  }
+})

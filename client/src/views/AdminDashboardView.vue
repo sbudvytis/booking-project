@@ -82,7 +82,12 @@ const removeUser = async (id: number) => {
     </fwb-table>
   </div>
   <FwbAlert type="success" v-else data-testid="userListEmpty" class="text-center"
-    >All clear! There are no users to approve ✅</FwbAlert
+    >✅ All clear! There are no users to approve.
+    <RouterLink
+      :to="{ name: 'Dashboard' }"
+      class="font-semibold leading-6 text-green-700 hover:text-green-500"
+      >Go back</RouterLink
+    ></FwbAlert
   >
   <div class="pt-5">
     <FwbAlert v-if="errorMessage" type="danger" class="text-center">

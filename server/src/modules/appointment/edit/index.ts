@@ -6,7 +6,7 @@ export default authenticatedProcedure
   .input(appointmentSchema)
   .mutation(
     async ({ input: updatedAppointmentData, ctx: { authUser, db } }) => {
-      // Check if the authenticated user has the required role and permissions
+      // Checks if the authenticated user has the required role and permissions
       const userPermissions = authUser.permissions || []
       const userRole = authUser.role || ''
 
@@ -22,7 +22,7 @@ export default authenticatedProcedure
         })
       }
 
-      // Fetch the existing appointment from the database
+      // Fetches the existing appointment from the database
       const existingAppointment = await db.getRepository(Appointment).findOne({
         where: { id: updatedAppointmentData.id },
       })
@@ -34,12 +34,12 @@ export default authenticatedProcedure
         })
       }
 
-      // Update the existing appointment with the new data
+      // Updates the existing appointment with the new data
       const updatedAppointment = db
         .getRepository(Appointment)
         .merge(existingAppointment, updatedAppointmentData)
 
-      // Save the updated appointment to the database
+      // Saves the updated appointment to the database
       const appointmentEdited = await db
         .getRepository(Appointment)
         .save(updatedAppointment)

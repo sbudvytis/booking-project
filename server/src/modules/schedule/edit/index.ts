@@ -8,7 +8,7 @@ import { TRPCError } from '@trpc/server'
 export default authenticatedProcedure
   .input(scheduleSchema)
   .mutation(async ({ input: updatedScheduleData, ctx: { authUser, db } }) => {
-    // Check if the authenticated user has the required role and permissions
+    // Checks if the authenticated user has the required role and permissions
     if (!authUser || authUser.role !== 'dentist') {
       throw new TRPCError({
         code: 'FORBIDDEN',
@@ -17,7 +17,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Fetch the existing schedule from the database
+    // Fetches the existing schedule from the database
     const existingSchedule = await db.getRepository(DentistSchedule).findOne({
       where: { scheduleId: updatedScheduleData.scheduleId },
     })
@@ -29,7 +29,7 @@ export default authenticatedProcedure
       })
     }
 
-    // Check if the authenticated user has the right to edit this schedule
+    // Checks if the authenticated user has the right to edit this schedule
     if (existingSchedule.userId !== authUser.id) {
       throw new TRPCError({
         code: 'FORBIDDEN',
@@ -37,12 +37,12 @@ export default authenticatedProcedure
       })
     }
 
-    // Update the existing schedule with the new data
+    // Updates the existing schedule with the new data
     const updatedSchedule = db
       .getRepository(DentistSchedule)
       .merge(existingSchedule, updatedScheduleData)
 
-    // Save the updated schedule to the database
+    // Saves the updated schedule to the database
     const scheduleEdited = await db
       .getRepository(DentistSchedule)
       .save(updatedSchedule)

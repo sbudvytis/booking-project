@@ -16,7 +16,7 @@ export default authenticatedProcedure
     if (!patient) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Schedule was not found`,
+        message: `Patient was not found`,
       })
     }
 

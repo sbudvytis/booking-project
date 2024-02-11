@@ -29,3 +29,18 @@ it('should get a dentists schedule by id', async () => {
     endDate: '2024-02-12',
   })
 })
+
+it('should throw an error when schedule is not found', async () => {
+  const db = await createTestDatabase()
+  const user = await db.getRepository(User).save(fakeUser({ role: 'dentist' }))
+  const { get } = scheduleRouter.createCaller(authContext({ db }, user))
+
+  try {
+    await get(999)
+  } catch (error) {
+    expect(error).toMatchObject({
+      code: 'NOT_FOUND',
+      message: 'Schedule was not found',
+    })
+  }
+})

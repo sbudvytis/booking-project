@@ -32,7 +32,7 @@ export default function provideRepos<TKeys extends keyof Entities>(
     const repos = Object.fromEntries(
       Object.entries(entitiesWanted).map(([key, EntityClass]) => [
         key,
-        ctx.db.getRepository(EntityClass as any), // cast to `any` to satisfy the compiler
+        ctx.db.getRepository(EntityClass as any),
       ])
     ) as Pick<Repositories, TKeys>
 

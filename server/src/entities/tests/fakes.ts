@@ -35,7 +35,7 @@ export const fakeSchedule = <T extends Partial<DentistSchedule>>(
   startTime: '10',
   endTime: '18',
   startDate: '2024-01-21',
-  endDate: '2024-02-11',
+  endDate: '2099-12-31',
   ...overrides,
 })
 

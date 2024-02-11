@@ -30,6 +30,7 @@ export default authenticatedProcedure
 
     const canViewAllSchedules = userPermissions.includes('VIEW_ALL_SCHEDULES')
 
+    // pagination
     let skip
     let take
 
