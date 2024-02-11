@@ -1,5 +1,7 @@
 import {
   clearStoredAccessToken,
+  clearSelectedId,
+  clearActiveTab,
   getStoredAccessToken,
   getUserIdFromToken,
   storeAccessToken,
@@ -26,6 +28,8 @@ export async function login(userLogin: { email: string; password: string }) {
 export function logout() {
   authToken.value = null
   clearStoredAccessToken(localStorage)
+  clearSelectedId(localStorage)
+  clearActiveTab(localStorage)
 }
 
 export const signup = trpc.user.signup.mutate

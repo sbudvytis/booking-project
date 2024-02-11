@@ -29,9 +29,23 @@ const props = withDefaults(
 const currentDate = new Date()
 const currentDay = getDaysBetweenDates(currentDate.toISOString(), currentDate.toISOString())[0]
 
-const activeTab = ref(
-  props.schedule.dayOfWeek.includes(currentDay) ? currentDay : props.schedule.dayOfWeek[0]
-)
+// Loading the active tab from localStorage or default to the current day or the first day of the week
+let activeTabValue =
+  localStorage.getItem('activeTab') ||
+  (props.schedule.dayOfWeek.includes(currentDay) ? currentDay : props.schedule.dayOfWeek[0])
+
+// Validating the active tab against the dayOfWeek list
+if (!props.schedule.dayOfWeek.includes(activeTabValue)) {
+  activeTabValue = props.schedule.dayOfWeek[0]
+  localStorage.setItem('activeTab', activeTabValue)
+}
+
+const activeTab = ref(activeTabValue)
+
+// using Watch for changes to activeTab and save to localStorage
+watch(activeTab, (newVal) => {
+  localStorage.setItem('activeTab', newVal)
+})
 
 const appointments: Ref<Record<string, Record<string, AppointmentBare>>> = ref({})
 
@@ -73,8 +87,16 @@ const isScheduleValid = () => {
   return props.displayExpired || endDay >= today
 }
 
+type VueHorizontalInstance = InstanceType<typeof VueHorizontal>
+
+const horizontal = ref<VueHorizontalInstance | null>(null)
+
 onMounted(async () => {
   await loadAppointments()
+  const todayIndex = props.schedule.dayOfWeek.indexOf(activeTab.value)
+  if (todayIndex !== 1 && horizontal.value) {
+    horizontal.value.scrollToIndex(todayIndex)
+  }
 })
 
 watch(
@@ -109,12 +131,39 @@ async function loadAppointments(scheduleId = props.schedule.scheduleId) {
 const visibleDays = computed(() => {
   return props.schedule.dayOfWeek.filter((day) => day === activeTab.value)
 })
+
+const isTodayInTabs = computed(() => {
+  const today = getDaysBetweenDates(new Date().toISOString(), new Date().toISOString())[0]
+  return props.schedule.dayOfWeek.includes(today)
+})
+
+function setActiveTabToToday() {
+  const today = getDaysBetweenDates(new Date().toISOString(), new Date().toISOString())[0]
+  activeTab.value = props.schedule.dayOfWeek.includes(today) ? today : props.schedule.dayOfWeek[0]
+  localStorage.setItem('activeTab', activeTab.value)
+
+  // Scrolls to the "today" tab
+  const todayIndex = props.schedule.dayOfWeek.indexOf(activeTab.value)
+  if (todayIndex !== -1 && horizontal.value) {
+    horizontal.value.scrollToIndex(todayIndex)
+  }
+}
 </script>
 
 <template>
   <div>
-    <div class="border-b border-gray-200 pt-10 text-sm font-medium text-gray-500">
-      <vue-horizontal class="horizontal" :displacement="0.5" :button-between="false">
+    <div class="border-b border-gray-200 pt-5 text-sm font-medium text-gray-500">
+      <div class="flex justify-end pb-5">
+        <fwbButton v-if="isTodayInTabs" @click="setActiveTabToToday" color="alternative"
+          >Back to Today</fwbButton
+        >
+      </div>
+      <vue-horizontal
+        ref="horizontal"
+        class="horizontal"
+        :displacement="0.5"
+        :button-between="false"
+      >
         <template v-slot:btn-prev>
           <button
             class="flex h-full items-center justify-center rounded-tl-lg bg-gradient-to-l from-transparent via-white to-gray-50 p-6"
@@ -180,7 +229,7 @@ const visibleDays = computed(() => {
             <fwb-table-head-cell>Time</fwb-table-head-cell>
             <fwb-table-head-cell class="text-center">Appointment</fwb-table-head-cell>
             <fwb-table-head-cell class="text-center">End Time</fwb-table-head-cell>
-            <fwb-table-head-cell class="text-center"><span></span></fwb-table-head-cell>
+            <fwb-table-head-cell class="text-right"><span></span></fwb-table-head-cell>
           </fwb-table-head>
           <fwb-table-body>
             <fwb-table-row
