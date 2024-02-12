@@ -57,11 +57,12 @@ const cancelForm = () => {
       <RouterLink
         :to="{ name: 'scheduleCreate' }"
         class="font-semibold leading-6 text-blue-700 hover:text-indigo-500"
-        >You can create one by clicking this link</RouterLink
+        >You can create one by clicking here</RouterLink
       >
     </FwbAlert>
     <div class="mt-4 flex justify-center space-x-4">
       <FwbPagination
+        v-if="schedules.length > 0"
         v-model="currentPage"
         :total-pages="totalPages"
         @update:modelValue="updatePage"
@@ -69,7 +70,7 @@ const cancelForm = () => {
       ></FwbPagination>
     </div>
     <div class="mt-4 flex justify-center space-x-4">
-      <FwbButton @click="cancelForm" type="button" color="default" size="lg">Go back</FwbButton>
+      <FwbButton @click="cancelForm" type="button" color="default" size="md">Go Back</FwbButton>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { trpc } from '@/trpc'
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref, computed, watch } from 'vue'
 import { FwbAlert, FwbButton, FwbSelect } from 'flowbite-vue'
 import type { ScheduleWithUser } from '@mono/server/src/shared/entities'
 import Schedule from '@/components/Schedule.vue'
@@ -16,10 +16,18 @@ onBeforeMount(async () => {
   })
   const rawSchedules = response.schedules
   schedules.value = rawSchedules.filter((schedule) => !isScheduleExpired(schedule))
-  selectedScheduleId.value = schedules.value[0]?.scheduleId?.toString() || ''
+
+  // Loads the selected schedule from localStorage or the first schedule
+  selectedScheduleId.value =
+    localStorage.getItem('selectedScheduleId') || schedules.value[0]?.scheduleId?.toString() || ''
 })
 
 const selectedScheduleId = ref<string>('')
+
+// using Watch for changes to selectedScheduleId and saving it to localStorage
+watch(selectedScheduleId, (newVal) => {
+  localStorage.setItem('selectedScheduleId', newVal)
+})
 
 const selectedSchedule = computed(() =>
   schedules.value.find((schedule) => String(schedule.scheduleId) === selectedScheduleId.value)
@@ -58,7 +66,7 @@ const schedulesOptions = computed(() =>
         tag="router-link"
         :href="{ name: 'scheduleEdit', params: { scheduleId: selectedSchedule.scheduleId } } as any"
         data-testid="editSchedule"
-        size="lg"
+        size="md"
       >
         Edit Schedule
       </FwbButton>
@@ -69,9 +77,9 @@ const schedulesOptions = computed(() =>
         tag="router-link"
         :href="{ name: 'scheduleCreate' } as any"
         data-testid="createSchedule"
-        size="lg"
+        size="md"
       >
-        Create a new schedule
+        Create Schedule
       </FwbButton>
 
       <FwbButton
@@ -82,10 +90,10 @@ const schedulesOptions = computed(() =>
           { name: 'appointmentCreate', params: { scheduleId: selectedSchedule.scheduleId } } as any
         "
         data-testid="createAppointment"
-        size="lg"
+        size="md"
         color="yellow"
       >
-        Add appointment
+        Add Appointment
       </FwbButton>
 
       <FwbButton
@@ -94,10 +102,10 @@ const schedulesOptions = computed(() =>
         tag="router-link"
         :href="{ name: 'scheduleAll' } as any"
         data-testid="scheduleAll"
-        size="lg"
+        size="md"
         color="alternative"
       >
-        View previous schedules
+        View Previous Schedules
       </FwbButton>
     </div>
   </div>

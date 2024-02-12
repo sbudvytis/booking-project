@@ -10,6 +10,14 @@ export function clearStoredAccessToken(storage: Storage) {
   storage.removeItem(TOKEN_KEY)
 }
 
+export function clearSelectedId(storage: Storage) {
+  storage.removeItem('selectedScheduleId')
+}
+
+export function clearActiveTab(storage: Storage) {
+  storage.removeItem('activeTab')
+}
+
 export function storeAccessToken(storage: Storage, token: string) {
   storage.setItem(TOKEN_KEY, token)
 }
