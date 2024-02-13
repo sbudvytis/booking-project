@@ -45,7 +45,7 @@ const schedulesOptions = computed(() =>
   <div class="DashboardView">
     <div class="mt-3">
       <FwbSelect
-        v-if="!isDentist"
+        v-if="!isDentist && schedulesOptions.length > 0"
         v-model="selectedScheduleId"
         id="scheduleSelect"
         :options="schedulesOptions"
@@ -56,7 +56,7 @@ const schedulesOptions = computed(() =>
       <Schedule :schedule="selectedSchedule" :displayExpired="false" />
     </div>
     <FwbAlert v-else data-testid="scheduleListEmpty" class="text-center"
-      >Looks like you have not created your schedule yet 😔</FwbAlert
+      >Looks like there are no schedules at the momemt 😔</FwbAlert
     >
 
     <div class="mt-4 flex justify-center space-x-4">

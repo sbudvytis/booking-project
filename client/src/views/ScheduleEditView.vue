@@ -25,7 +25,6 @@ onBeforeMount(async () => {
   try {
     const respone = await trpc.schedule.find.query({ latest: true })
     const existingSchedules = respone.schedules
-
     const scheduleIdFromUrl = Number(route.params.scheduleId)
 
     const existingSchedule = existingSchedules.find(
@@ -74,7 +73,6 @@ const [editSchedule] = useErrorMessage(async () => {
 
   try {
     const daysOfWeek = getDaysBetweenDates(scheduleForm.value.startDate, scheduleForm.value.endDate)
-
     await trpc.schedule.edit.mutate({
       ...scheduleForm.value,
       dayOfWeek: daysOfWeek,
@@ -89,7 +87,6 @@ const [editSchedule] = useErrorMessage(async () => {
 const [deleteSchedule] = useErrorMessage(async () => {
   try {
     const scheduleId = Number(route.params.scheduleId)
-
     const existingAppointments = await trpc.appointment.get.query(scheduleId)
 
     // Checks if the list of appointments is empty

@@ -34,6 +34,7 @@ test.describe.serial('signup and login sequence', () => {
   test('visitor should see Your account is pending approval', async ({ page }) => {
     // Given (ARRANGE)
     await page.goto('/login')
+    const errorMessage = page.getByTestId('errorMessage')
     const dashboardLink = page.getByRole('link', { name: 'Dashboard' })
     await expect(dashboardLink).toBeHidden()
 
@@ -44,6 +45,6 @@ test.describe.serial('signup and login sequence', () => {
     await form.locator('button[type="submit"]').click()
 
     // Then (ASSERT)
-    await page.getByTestId('errorMessage').click()
+    await expect(errorMessage).toBeVisible()
   })
 })

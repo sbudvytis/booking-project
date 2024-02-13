@@ -8,6 +8,7 @@ import { DentistSchedule } from '@server/entities/dentistSchedule'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import { TRPCError } from '@trpc/server'
 import nodemailer from 'nodemailer'
+import logger from '@server/logger'
 
 export default authenticatedProcedure
   .input(appointmentInsertSchema.omit({ userId: true }))
@@ -103,9 +104,9 @@ export default authenticatedProcedure
             <p><strong>End Time:</strong> ${appointmentCreated.endTime}</p>
           `,
         })
-        console.log('Message sent: %s', info.messageId)
+        logger.info('Message sent: %s', info.messageId)
       } catch (error) {
-        console.error('Error sending email:', error)
+        logger.error('Error sending email:', error)
       }
     })
 

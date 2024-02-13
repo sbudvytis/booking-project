@@ -1,6 +1,7 @@
 import { User, userSchema } from '@server/entities/user'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure'
 import { TRPCError } from '@trpc/server'
+import logger from '@server/logger'
 
 export default authenticatedProcedure
   .input(userSchema.pick({ id: true }))
@@ -26,6 +27,7 @@ export default authenticatedProcedure
       })
     }
     user.isApproved = true
+    logger.info(`User approved successfully with ID: ${user.id}`)
 
     const userApproved = await db.getRepository(User).save(user)
 

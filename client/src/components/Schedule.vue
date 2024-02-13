@@ -166,10 +166,10 @@ function setActiveTabToToday() {
       >
         <template v-slot:btn-prev>
           <button
-            class="flex h-full items-center justify-center rounded-tl-lg bg-gradient-to-l from-transparent via-white to-gray-50 p-6"
+            class="flex h-full items-center justify-center rounded-tl-lg bg-gradient-to-l from-transparent via-white to-gray-50 p-6 hover:text-blue-600"
           >
             <svg
-              class="h-6 w-6 text-gray-600 dark:text-white"
+              class="h-6 w-6"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -188,10 +188,10 @@ function setActiveTabToToday() {
 
         <template v-slot:btn-next>
           <button
-            class="flex h-full items-center justify-center rounded-tr-lg bg-gradient-to-r from-transparent via-white to-gray-50 p-6"
+            class="flex h-full items-center justify-center rounded-tr-lg bg-gradient-to-r from-transparent via-white to-gray-50 p-6 hover:text-blue-600"
           >
             <svg
-              class="h-6 w-6 text-gray-600 dark:text-white"
+              class="h-6 w-6"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -241,7 +241,6 @@ function setActiveTabToToday() {
               :key="timeSlot"
               :class="{
                 'line-through': appointments[day]?.[timeSlot]?.status === 'Completed',
-                'dark:text-white': appointments[day]?.[timeSlot]?.status === 'Completed',
               }"
             >
               <fwb-table-cell>{{ timeSlot }}</fwb-table-cell>
