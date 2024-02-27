@@ -27,7 +27,7 @@ const loadUsers = async () => {
     const rawUsers = response
     users.value = rawUsers.filter((user) => !user.isApproved)
   } catch (error) {
-    console.error('Failed to load users:', error)
+    console.error('Failed to load users: ', error)
   }
 }
 
