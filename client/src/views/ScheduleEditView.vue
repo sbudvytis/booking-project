@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, watch } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { FwbButton, FwbInput } from 'flowbite-vue'
 import useErrorMessage from '@/composables/useErrorMessage'
 import AlertError from '@/components/AlertError.vue'
 import PageForm from '@/components/PageForm.vue'
-import { validateHours, getDaysBetweenDates } from '@/utils/validation'
+import { clearActiveTab, clearSelectedId } from '@/utils/auth'
+import { validateHours } from '@/utils/validation'
 import { trpc } from '@/trpc'
 
 const router = useRouter()
 const route = useRoute()
 
 const scheduleForm = ref({
-  dayOfWeek: [] as string[],
   startTime: '',
   endTime: '',
-  startDate: '',
-  endDate: '',
+  startDate: new Date().toISOString().split('T')[0],
+  endDate: new Date().toISOString().split('T')[0],
   scheduleId: 0,
   userId: 0,
 })
@@ -33,11 +33,14 @@ onBeforeMount(async () => {
 
     // Populates the form with existing schedule data
     scheduleForm.value = {
-      dayOfWeek: existingSchedule?.dayOfWeek || [],
       startTime: existingSchedule?.startTime || '',
       endTime: existingSchedule?.endTime || '',
-      startDate: existingSchedule?.startDate || '',
-      endDate: existingSchedule?.endDate || '',
+      startDate: existingSchedule?.startDate
+        ? new Date(existingSchedule.startDate).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0],
+      endDate: existingSchedule?.endDate
+        ? new Date(existingSchedule.endDate).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0],
       scheduleId: existingSchedule?.scheduleId || 0,
       userId: existingSchedule?.userId || 0,
     }
@@ -72,10 +75,10 @@ const [editSchedule] = useErrorMessage(async () => {
   }
 
   try {
-    const daysOfWeek = getDaysBetweenDates(scheduleForm.value.startDate, scheduleForm.value.endDate)
     await trpc.schedule.edit.mutate({
       ...scheduleForm.value,
-      dayOfWeek: daysOfWeek,
+      startDate: new Date(scheduleForm.value.startDate),
+      endDate: new Date(scheduleForm.value.endDate),
     })
 
     router.push({ name: 'Dashboard' })
@@ -95,19 +98,18 @@ const [deleteSchedule] = useErrorMessage(async () => {
       return
     }
 
-    await trpc.schedule.remove.mutate(scheduleForm.value)
+    await trpc.schedule.remove.mutate({
+      ...scheduleForm.value,
+      startDate: new Date(scheduleForm.value.startDate),
+      endDate: new Date(scheduleForm.value.endDate),
+    })
     router.push({ name: 'Dashboard' })
   } catch (error) {
     errorMessage.value = (error as Error).message || 'An unknown error occurred.'
   }
+  clearSelectedId(localStorage)
+  clearActiveTab(localStorage)
 })
-
-watch(
-  () => scheduleForm.value.dayOfWeek,
-  () => {
-    validateForm()
-  }
-)
 
 const hourValidation = (event: InputEvent) => {
   validateHours(event)

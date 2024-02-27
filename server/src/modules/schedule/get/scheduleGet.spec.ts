@@ -10,11 +10,10 @@ it('should get a dentists schedule by id', async () => {
   const { create, get } = scheduleRouter.createCaller(authContext({ db }, user))
 
   const scheduleCreated = await create({
-    dayOfWeek: ['Monday (22-01)'],
     startTime: '10',
     endTime: '13',
-    startDate: '2024-01-22',
-    endDate: '2024-02-12',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   const scheduleGot = await get(scheduleCreated.scheduleId)
@@ -22,11 +21,10 @@ it('should get a dentists schedule by id', async () => {
   expect(scheduleGot).toMatchObject({
     scheduleId: scheduleCreated.scheduleId,
     userId: user.id,
-    dayOfWeek: ['Monday (22-01)'],
     startTime: '10',
     endTime: '13',
-    startDate: '2024-01-22',
-    endDate: '2024-02-12',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 })
 

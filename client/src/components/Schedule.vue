@@ -27,16 +27,23 @@ const props = withDefaults(
 )
 
 const currentDate = new Date()
-const currentDay = getDaysBetweenDates(currentDate.toISOString(), currentDate.toISOString())[0]
+const currentDay = getDaysBetweenDates(currentDate, currentDate)[0]
 
-// Loading the active tab from localStorage or default to the current day or the first day of the week
+const generatedDays = computed(() => {
+  return getDaysBetweenDates(props.schedule.startDate, props.schedule.endDate)
+})
+
 let activeTabValue =
   localStorage.getItem('activeTab') ||
-  (props.schedule.dayOfWeek.includes(currentDay) ? currentDay : props.schedule.dayOfWeek[0])
+  (getDaysBetweenDates(props.schedule.startDate, props.schedule.endDate).includes(currentDay)
+    ? currentDay
+    : getDaysBetweenDates(props.schedule.startDate, props.schedule.endDate)[0])
 
-// Validating the active tab against the dayOfWeek list
-if (!props.schedule.dayOfWeek.includes(activeTabValue)) {
-  activeTabValue = props.schedule.dayOfWeek[0]
+// Validating the active tab against the generated days list
+if (
+  !getDaysBetweenDates(props.schedule.startDate, props.schedule.endDate).includes(activeTabValue)
+) {
+  activeTabValue = getDaysBetweenDates(props.schedule.startDate, props.schedule.endDate)[0]
   localStorage.setItem('activeTab', activeTabValue)
 }
 
@@ -93,8 +100,8 @@ const horizontal = ref<VueHorizontalInstance | null>(null)
 
 onMounted(async () => {
   await loadAppointments()
-  const todayIndex = props.schedule.dayOfWeek.indexOf(activeTab.value)
-  if (todayIndex !== 1 && horizontal.value) {
+  const todayIndex = generatedDays.value.indexOf(currentDay)
+  if (todayIndex !== -1 && horizontal.value) {
     horizontal.value.scrollToIndex(todayIndex)
   }
 })
@@ -104,13 +111,10 @@ watch(
   async (newScheduleId) => {
     await loadAppointments(newScheduleId)
 
-    const currentActualDay = getDaysBetweenDates(
-      currentDate.toISOString(),
-      currentDate.toISOString()
-    )[0]
-    activeTab.value = props.schedule.dayOfWeek.includes(currentActualDay)
+    const currentActualDay = getDaysBetweenDates(currentDate, currentDate)[0]
+    activeTab.value = generatedDays.value.includes(currentActualDay)
       ? currentActualDay
-      : props.schedule.dayOfWeek[0]
+      : generatedDays.value[0]
   }
 )
 
@@ -129,21 +133,26 @@ async function loadAppointments(scheduleId = props.schedule.scheduleId) {
 }
 
 const visibleDays = computed(() => {
-  return props.schedule.dayOfWeek.filter((day) => day === activeTab.value)
+  return generatedDays.value.filter((day) => day === activeTab.value)
 })
 
 const isTodayInTabs = computed(() => {
-  const today = getDaysBetweenDates(new Date().toISOString(), new Date().toISOString())[0]
-  return props.schedule.dayOfWeek.includes(today)
+  return generatedDays.value.includes(currentDay)
 })
 
 function setActiveTabToToday() {
-  const today = getDaysBetweenDates(new Date().toISOString(), new Date().toISOString())[0]
-  activeTab.value = props.schedule.dayOfWeek.includes(today) ? today : props.schedule.dayOfWeek[0]
+  const today = getDaysBetweenDates(new Date(), new Date())[0]
+
+  if (generatedDays.value.includes(today)) {
+    activeTab.value = today
+  } else {
+    activeTab.value = generatedDays.value[0]
+  }
+
   localStorage.setItem('activeTab', activeTab.value)
 
   // Scrolls to the "today" tab
-  const todayIndex = props.schedule.dayOfWeek.indexOf(activeTab.value)
+  const todayIndex = generatedDays.value.indexOf(activeTab.value)
   if (todayIndex !== -1 && horizontal.value) {
     horizontal.value.scrollToIndex(todayIndex)
   }
@@ -208,7 +217,7 @@ function setActiveTabToToday() {
           </button>
         </template>
 
-        <div v-for="day in schedule.dayOfWeek" :key="day">
+        <div v-for="day in generatedDays" :key="day">
           <div
             class="cursor-pointer rounded-t-lg px-6 py-4 hover:bg-gray-50"
             :class="{

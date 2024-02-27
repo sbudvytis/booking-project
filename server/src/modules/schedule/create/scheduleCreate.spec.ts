@@ -10,21 +10,19 @@ it('should create a dentists schedule', async () => {
   const { create } = scheduleRouter.createCaller(authContext({ db }, user))
 
   const scheduleCreated = await create({
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   expect(scheduleCreated).toMatchObject({
     scheduleId: expect.any(Number),
     userId: user.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 })
 
@@ -35,11 +33,10 @@ it('should throw an error when staff tries to create a schedule', async () => {
 
   try {
     await create({
-      dayOfWeek: ['Sunday (21-01)'],
       startTime: '11',
       endTime: '14',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     })
   } catch (error) {
     expect((error as Error).message).toEqual(

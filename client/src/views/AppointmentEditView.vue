@@ -8,6 +8,7 @@ import AppointmentForm from '@/components/AppointmentForm.vue'
 import type { AppointmentBare } from '@mono/server/src/shared/entities'
 import { filterBookedTimes } from '../utils/filterBookedTimes'
 import { FwbInput, FwbButton, FwbSelect } from 'flowbite-vue'
+import { getDaysBetweenDates } from '@/utils/validation'
 
 const router = useRouter()
 const route = useRoute()
@@ -72,9 +73,16 @@ onMounted(async () => {
 
     completedCheckbox.value = appointmentForm.value.status === 'Completed'
 
-    availableDays.value = [...new Set(schedules.flatMap((schedule) => schedule.dayOfWeek))].map(
-      (day) => ({ value: day, name: day })
-    )
+    // Dynamically populate availableDays based on the schedule's start and end dates
+    const startDate = new Date(schedules[0]?.startDate)
+    const endDate = new Date(schedules[0]?.endDate)
+
+    const days = getDaysBetweenDates(startDate, endDate).map((date) => ({
+      value: date,
+      name: date,
+    }))
+
+    availableDays.value = days
 
     const allStartTimes: string[] = []
     const allEndTimes: string[] = []

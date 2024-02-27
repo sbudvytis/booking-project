@@ -28,20 +28,17 @@ export class DentistSchedule {
   })
   appointments: Appointment[]
 
-  @Column('text', { array: true, default: [] })
-  dayOfWeek: string[]
-
   @Column('text')
   startTime: string
 
   @Column('text')
   endTime: string
 
-  @Column('date')
-  startDate: string
+  @Column('timestamp')
+  startDate: Date
 
-  @Column('date')
-  endDate: string
+  @Column('timestamp')
+  endDate: Date
 }
 
 export type ScheduleBare = Omit<DentistSchedule, 'user' | 'appointments'>
@@ -50,11 +47,10 @@ export type ScheduleWithUser = ScheduleBare & { user: User }
 export const scheduleSchema = validates<ScheduleBare>().with({
   scheduleId: z.number().int().positive(),
   userId: z.number().int().positive(),
-  dayOfWeek: z.array(z.string().min(1).max(64)),
   startTime: z.string(),
   endTime: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
 })
 
 export const scheduleInsertSchema = scheduleSchema.omit({ scheduleId: true })

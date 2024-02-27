@@ -12,31 +12,28 @@ it('should edit a dentists schedule', async () => {
   )
 
   const scheduleCreated = await create({
-    dayOfWeek: ['Monday (22-01)'],
     startTime: '10',
     endTime: '13',
-    startDate: '2024-01-22',
-    endDate: '2024-02-12',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   const scheduleEdited = await edit({
     scheduleId: scheduleCreated.scheduleId,
     userId: user.id,
-    dayOfWeek: ['Tuesday (23-01)'],
     startTime: '12',
     endTime: '15',
-    startDate: '2024-01-23',
-    endDate: '2024-02-13',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   expect(scheduleEdited).toMatchObject({
     scheduleId: scheduleCreated.scheduleId,
     userId: user.id,
-    dayOfWeek: ['Tuesday (23-01)'],
     startTime: '12',
     endTime: '15',
-    startDate: '2024-01-23',
-    endDate: '2024-02-13',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 })
 
@@ -53,11 +50,10 @@ it("should deny a staff member from editing a dentist's schedule", async () => {
   )
 
   const scheduleCreated = await create({
-    dayOfWeek: ['Monday (22-01)'],
     startTime: '10',
     endTime: '13',
-    startDate: '2024-01-22',
-    endDate: '2024-02-12',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   const { edit: editSchedule } = scheduleRouter.createCaller(
@@ -68,11 +64,10 @@ it("should deny a staff member from editing a dentist's schedule", async () => {
     await editSchedule({
       scheduleId: scheduleCreated.scheduleId,
       userId: staffUser.id,
-      dayOfWeek: ['Tuesday (23-01)'],
       startTime: '12',
       endTime: '15',
-      startDate: '2024-01-23',
-      endDate: '2024-02-13',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     })
   } catch (error) {
     expect((error as Error).message).toEqual(

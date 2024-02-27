@@ -36,7 +36,9 @@ const selectedSchedule = computed(() =>
 const schedulesOptions = computed(() =>
   schedules.value.map((schedule) => ({
     value: String(schedule.scheduleId),
-    name: `${schedule.user.firstName}'s (${schedule.user.email}) schedule from ${schedule.startDate} to ${schedule.endDate}`,
+    name: `${schedule.user.firstName}'s (${schedule.user.email}) schedule from ${
+      new Date(schedule.startDate).toISOString().split('T')[0]
+    } to ${new Date(schedule.endDate).toISOString().split('T')[0]}`,
   }))
 )
 </script>

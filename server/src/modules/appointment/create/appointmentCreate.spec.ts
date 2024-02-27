@@ -55,7 +55,6 @@ it('should create an appointment', async () => {
       email: patient.email,
     },
     schedule: {
-      dayOfWeek: schedule.dayOfWeek,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       startDate: schedule.startDate,
@@ -110,7 +109,6 @@ it('should not create a new patient if the patient already exists', async () => 
       email: patient.email,
     },
     schedule: {
-      dayOfWeek: schedule.dayOfWeek,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       startDate: schedule.startDate,

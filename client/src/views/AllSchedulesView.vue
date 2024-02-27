@@ -47,8 +47,10 @@ const cancelForm = () => {
     <div v-if="schedules.length > 0">
       <div v-for="schedule in schedules" :key="schedule.scheduleId">
         <FwbHeading tag="h5" class="mb-2 ml-7 mt-10">
-          🗓️ {{ schedule.startDate }} - {{ schedule.endDate }}
+          🗓️ {{ new Date(schedule.startDate).toISOString().split('T')[0] }} -
+          {{ new Date(schedule.endDate).toISOString().split('T')[0] }}
         </FwbHeading>
+
         <Schedule :schedule="schedule" :displayExpired="true" />
       </div>
     </div>

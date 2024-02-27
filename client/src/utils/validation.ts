@@ -10,7 +10,7 @@ export const validateHours = (event: InputEvent) => {
   }
 }
 
-export const getDaysBetweenDates = (startDate: string, endDate: string) => {
+export const getDaysBetweenDates = (startDate: Date, endDate: Date) => {
   const start = new Date(startDate)
   const end = new Date(endDate)
   const dayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']

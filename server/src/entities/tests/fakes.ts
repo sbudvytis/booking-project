@@ -31,11 +31,10 @@ export const fakeSchedule = <T extends Partial<DentistSchedule>>(
 ) => ({
   scheduleId: randomId(),
   userId: randomId(),
-  dayOfWeek: ['Sunday (21-01)'],
   startTime: '10',
   endTime: '18',
-  startDate: '2024-01-21',
-  endDate: '2099-12-31',
+  startDate: new Date('2024-01-21'),
+  endDate: new Date('2099-02-11'),
   ...overrides,
 })
 

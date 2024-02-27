@@ -8,6 +8,7 @@ import AppointmentForm from '@/components/AppointmentForm.vue'
 import { FwbInput, FwbButton, FwbSelect, FwbTextarea } from 'flowbite-vue'
 import type { AppointmentBare } from '@mono/server/src/shared/entities'
 import { isScheduleExpired } from '../utils/scheduleUtils'
+import { getDaysBetweenDates } from '@/utils/validation'
 import { filterBookedTimes } from '../utils/filterBookedTimes'
 
 const router = useRouter()
@@ -41,10 +42,16 @@ onMounted(async () => {
 
     appointments.value = await trpc.appointment.find.query({ scheduleId: scheduleIdFromRoute })
 
-    // Uses only active schedules for availableDays
-    availableDays.value = [
-      ...new Set(activeSchedules.flatMap((schedule) => schedule.dayOfWeek)),
-    ].map((day) => ({ value: day, name: day }))
+    // Dynamically populate availableDays based on the schedule's start and end dates
+    const startDate = new Date(activeSchedules[0]?.startDate)
+    const endDate = new Date(activeSchedules[0]?.endDate)
+
+    const days = getDaysBetweenDates(startDate, endDate).map((date) => ({
+      value: date,
+      name: date,
+    }))
+
+    availableDays.value = days
 
     const allStartTimes: string[] = []
     const allEndTimes: string[] = []
@@ -118,16 +125,11 @@ const cancelForm = () => {
 watch(
   () => appointmentForm.value.startTime,
   (newStartTime) => {
-    const selectedDay = appointmentForm.value.appointmentDay
-    const existingAppointmentsOnDay = appointments.value.filter(
-      (appointment) => appointment.appointmentDay === selectedDay
-    )
-
-    // Filters out end times that overlap with existing appointments
+    // Filter out end times that overlap with existing appointments
     availableEndTimes.value = originalEndTimes.value.filter((endTime: { value: string }) => {
       return (
         endTime.value > newStartTime &&
-        !existingAppointmentsOnDay.some(
+        !appointments.value.some(
           (appointment) =>
             newStartTime < appointment.endTime && endTime.value > appointment.startTime
         )

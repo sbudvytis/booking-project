@@ -22,8 +22,8 @@ it('should find appointments if user has right permissions or role', async () =>
       dayOfWeek: ['Sunday (21-01)'],
       startTime: '10',
       endTime: '18',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     }),
   ])
 
@@ -99,8 +99,8 @@ it('should throw FORBIDDEN error if user does not have right permissions or role
       dayOfWeek: ['Sunday (21-01)'],
       startTime: '10',
       endTime: '18',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     }),
   ])
 

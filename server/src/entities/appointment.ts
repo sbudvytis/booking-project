@@ -39,7 +39,7 @@ export class Appointment {
   @Column('text')
   appointmentType: string
 
-  @Column('text')
+  @Column('text') // timestamp
   appointmentDay: string
 
   @Column('text')

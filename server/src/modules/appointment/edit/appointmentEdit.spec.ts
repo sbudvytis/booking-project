@@ -35,7 +35,6 @@ it('should edit a dentists appointment', async () => {
       email: patient.email,
     },
     schedule: {
-      dayOfWeek: schedule.dayOfWeek,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       startDate: schedule.startDate,

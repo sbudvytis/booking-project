@@ -13,11 +13,10 @@ it('should return a list of schedules', async () => {
     fakeSchedule({
       scheduleId: 1,
       userId: user.id,
-      dayOfWeek: ['Sunday (21-01)'],
       startTime: '10',
       endTime: '18',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     }),
   ])
 
@@ -27,10 +26,9 @@ it('should return a list of schedules', async () => {
   expect(userSchedules.schedules[0]).toMatchObject({
     scheduleId: expect.any(Number),
     userId: user.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '10',
     endTime: '18',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 })

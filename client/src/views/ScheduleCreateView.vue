@@ -6,16 +6,15 @@ import { FwbButton, FwbInput } from 'flowbite-vue'
 import useErrorMessage from '@/composables/useErrorMessage'
 import AlertError from '@/components/AlertError.vue'
 import PageForm from '@/components/PageForm.vue'
-import { validateHours, getDaysBetweenDates } from '@/utils/validation'
+import { validateHours } from '@/utils/validation'
 
 const router = useRouter()
 
 const scheduleForm = ref({
-  dayOfWeek: [],
   startTime: '',
   endTime: '',
-  startDate: '',
-  endDate: '',
+  startDate: new Date().toISOString().split('T')[0],
+  endDate: new Date().toISOString().split('T')[0],
 })
 
 const errorMessage = ref('')
@@ -48,12 +47,11 @@ const [createSchedule] = useErrorMessage(async () => {
     return
   }
 
-  const daysOfWeek = getDaysBetweenDates(scheduleForm.value.startDate, scheduleForm.value.endDate)
-
   try {
     await trpc.schedule.create.mutate({
       ...scheduleForm.value,
-      dayOfWeek: daysOfWeek,
+      startDate: new Date(scheduleForm.value.startDate),
+      endDate: new Date(scheduleForm.value.endDate),
     })
 
     router.push({ name: 'Dashboard' })

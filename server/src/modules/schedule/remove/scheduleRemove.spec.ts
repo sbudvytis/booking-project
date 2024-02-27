@@ -11,21 +11,19 @@ it('should remove a dentists schedule', async () => {
 
   const schedule = await db.getRepository(DentistSchedule).save({
     userId: user.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   const result = await remove({
     scheduleId: schedule.scheduleId,
     userId: user.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   expect(result).toEqual({
@@ -46,22 +44,20 @@ it('should throw an error when staff tries to delete a schedule', async () => {
 
   const schedule = await db.getRepository(DentistSchedule).save({
     userId: user.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   try {
     await remove({
       scheduleId: schedule.scheduleId,
       userId: user.id,
-      dayOfWeek: ['Sunday (21-01)'],
       startTime: '11',
       endTime: '14',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     })
   } catch (error) {
     expect((error as Error).message).toEqual(
@@ -79,11 +75,10 @@ it('should throw an error when the schedule does not exist', async () => {
     await remove({
       scheduleId: 999,
       userId: user.id,
-      dayOfWeek: ['Sunday (21-01)'],
       startTime: '11',
       endTime: '14',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     })
   } catch (error) {
     expect((error as Error).message).toEqual('Schedule not found.')
@@ -98,22 +93,20 @@ it('should throw an error when the user does not have the right to delete the sc
 
   const schedule = await db.getRepository(DentistSchedule).save({
     userId: user2.id,
-    dayOfWeek: ['Sunday (21-01)'],
     startTime: '11',
     endTime: '14',
-    startDate: '2024-01-21',
-    endDate: '2024-02-11',
+    startDate: new Date('2024-01-21'),
+    endDate: new Date('2099-02-11'),
   })
 
   try {
     await remove({
       scheduleId: schedule.scheduleId,
       userId: user.id,
-      dayOfWeek: ['Sunday (21-01)'],
       startTime: '11',
       endTime: '14',
-      startDate: '2024-01-21',
-      endDate: '2024-02-11',
+      startDate: new Date('2024-01-21'),
+      endDate: new Date('2099-02-11'),
     })
   } catch (error) {
     expect((error as Error).message).toEqual(
