@@ -73,6 +73,6 @@ npm run test:unit -w client
 # front end E2E tests
 npm run test:e2e -w client
 
-# back end tests with an in-memory database (database must have a user with id 1, email: dentist@fake.com and password: 12345678)
+# back end tests with an in-memory database
 npm test -w server
 ```
