@@ -34,7 +34,7 @@ which includes different permissions. Upon signing up, the very first user with 
 1. Clone the repository or download the source code files:
 
 ```bash
-git clone https://github.com/TuringCollegeSubmissions/sbudvy-BE.4.4.git
+git clone https://github.com/sbudvytis/booking-project.git
 ```
 
 2. Install all the packages:
@@ -75,36 +75,4 @@ npm run test:e2e -w client
 
 # back end tests with an in-memory database (database must have a user with id 1, email: dentist@fake.com and password: 12345678)
 npm test -w server
-```
-
-## Auto email send
-
-If you want to test this feature, where user can send an automated email when appointment created, you must provide your email credentials:
-
-```bash
-host: 'your email provider',
-port: port (usualy 465),
-auth: {
-  user: email address,
-  pass: password,
-}
-```
-
-## Deployed application
-
-You can visit this web application by going to the link <https://dentist-scheduler.p779ahj5b93b6.eu-central-1.cs.amazonlightsail.com/>
-
-Login with a test user (so you could approve your user) using these credentials:
-
-```bash
-email address: dentist@fake.com
-password: 12345678
-```
-
-## Personal repo
-
-You can see all commit history, actions and pipelines of this project on my personal repo
-
-```bash
-https://github.com/sbudvytis/booking-project.git
 ```
